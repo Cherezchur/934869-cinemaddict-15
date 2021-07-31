@@ -1,61 +1,49 @@
-// import {createShowMoreButtonTemplate} from './view/show-more-button.js';
 import {createProfileTemplate} from './view/profile.js';
 import {createMenuTemplate} from './view/menu.js';
-// import {createFilmCardTemplate} from './view/film-card.js';
 import {createSortListTemplate} from './view/sort.js';
+import {createSortSectionTemplate} from './view/films.js';
+import {createShowMoreButtonTemplate} from './view/show-more-button.js';
+import {createTopFilmsTemplate} from './view/top-films.js';
+import {createMostCommentedFilmsTemplate} from './view/most-commented-films.js';
+import {createFilmCardTemplate} from './view/film-card.js';
 import {createPopupTemplate} from './view/popup.js';
-import {createSortListTemplate} from './view/films.js';
 
-const CARD_COUNT = 5;
+const FILMS_COUNT = 5;
 const EXTRA_FILMS_COUNT = 2;
 
 const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-const siteHeaderElement = document.querySelector('.header');
-const siteMainElement = document.querySelector('.main');
+const pageHeader = document.querySelector('.header');
+const pageMain = document.querySelector('.main');
 
-render(siteHeaderElement, createProfileTemplate(), 'beforeend');
-render(siteMainElement, createMenuTemplate(), 'beforeend');
-render(siteMainElement, createSortListTemplate(), 'beforeend');
+render(pageHeader, createProfileTemplate(), 'beforeend');
+render(pageMain, createMenuTemplate(), 'beforeend');
+render(pageMain, createSortListTemplate(), 'beforeend');
 
-const filmsSection = document.createElement('section');
-filmsSection.classList.add('films');
+const sitefilmsSection = document.createElement('section');
+sitefilmsSection.classList.add('films');
+pageMain.insertAdjacentElement('beforeend', sitefilmsSection);
 
-render(siteMainElement, createSortListTemplate(), 'beforeend');
-render(filmsSection, createSortListTemplate(), 'beforeend');
-// siteMainElement.insertAdjacentElement('beforeend', filmsSection);
+render(sitefilmsSection, createSortSectionTemplate(), 'beforeend');
+render(sitefilmsSection, createTopFilmsTemplate(), 'beforeend');
+render(sitefilmsSection, createMostCommentedFilmsTemplate(), 'beforeend');
 
-// const createFilmsListSection = (sectionClass, headerClass, header, filmsCardCount) => {
-//   const filmsSortSections = document.createElement('section');
-//   filmsSortSections.className = sectionClass;
+const filmsSortSection = sitefilmsSection.querySelector('.films-list');
+render(filmsSortSection, createShowMoreButtonTemplate(), 'beforeend');
 
-//   const filmsSectionHeader = document.createElement('h2');
-//   filmsSectionHeader.className = headerClass;
-//   filmsSectionHeader.textContent = header;
+const sortSectionContainer = filmsSortSection.querySelector('.films-list__container');
+for (let count = 0 ; count < FILMS_COUNT ; count++) {
+  render(sortSectionContainer, createFilmCardTemplate(), 'beforeend');
+}
 
-//   const filmSectionContainer = document.createElement('div');
-//   filmSectionContainer.classList.add('films-list__container');
-//   for (let i = 0 ; i < filmsCardCount ; i++) {
-//     render(filmSectionContainer, createFilmCardTemplate(), 'beforeend');
-//   }
+const topRatedContainer = document.querySelector('.top-rated__container');
+const mostCommentContainer = document.querySelector('.most-commented__container');
+for (let count = 0 ; count < EXTRA_FILMS_COUNT ; count++) {
+  render(topRatedContainer, createFilmCardTemplate(), 'beforeend');
+  render(mostCommentContainer, createFilmCardTemplate(), 'beforeend');
+}
 
-//   filmsSection.insertAdjacentElement('beforeend', filmsSortSections);
-//   filmsSortSections.insertAdjacentElement('beforeend', filmsSectionHeader);
-//   filmsSortSections.insertAdjacentElement('beforeend', filmSectionContainer);
-//   if (sectionClass === 'films-list') {
-//     render(filmsSortSections, createShowMoreButtonTemplate(), 'beforeend');
-//   }
-// };
-
-// createFilmsListSection('films-list', 'films-list__title visually-hidden', 'All movies. Upcoming', FILMS_SORT_CARD_COUNT);
-// createFilmsListSection('films-list films-list--extra', 'films-list__title', 'Top rated', EXTRA_FILMS_SORT_COUNT);
-// createFilmsListSection('films-list films-list--extra', 'films-list__title', 'Most commented', EXTRA_FILMS_SORT_COUNT);
-
-const siteBodyElement = document.body;
-
-render(siteBodyElement, createPopupTemplate(), 'beforeend');
-
-export {CARD_COUNT, EXTRA_FILMS_COUNT};
-
+const pageBody = document.body;
+render(pageBody, createPopupTemplate(), 'beforeend');
