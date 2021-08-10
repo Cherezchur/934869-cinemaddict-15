@@ -1,11 +1,22 @@
-export const createMenuTemplate = () => (
-  `<nav class="main-navigation">
-    <div class="main-navigation__items">
-      <a href="#all" class="main-navigation__item">All movies</a>
-      <a href="#watchlist" class="main-navigation__item">Watchlist <span class="main-navigation__item-count">13</span></a>
-      <a href="#history" class="main-navigation__item main-navigation__item--active">History <span class="main-navigation__item-count">4</span></a>
-      <a href="#favorites" class="main-navigation__item">Favorites <span class="main-navigation__item-count">8</span></a>
-    </div>
-    <a href="#stats" class="main-navigation__additional">Stats</a>
-  </nav>`
-);
+const createFilterLinkTemplate = (filters) => {
+  const {name, count} = filters;
+
+  return (
+    `<a href="#${name}" class="main-navigation__item">${name.toUpperCase().slice(0, 1) + name.slice(1)} <span class="main-navigation__item-count">${count}</span></a>`
+  );
+};
+
+export const createMenuTemplate = (filterLinks) => {
+  const filterLinksTemplate = filterLinks
+    .map((filter, index) => createFilterLinkTemplate(filter, index === 0))
+    .join('');
+
+  return `<nav class="main-navigation">
+            <div class="main-navigation__items">
+              <a href="#all" class="main-navigation__item">All movies</a>
+              ${filterLinksTemplate}
+            </div>
+            <a href="#stats" class="main-navigation__additional">Stats</a>
+          </nav>`;
+};
+
