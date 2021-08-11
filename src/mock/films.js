@@ -39,7 +39,7 @@ const getRelizeDate = () => {
 const getDurationFilm = () => {
   const isMoreHour = Boolean(getRandomInteger(0, 1));
 
-  !isMoreHour ? `${getRandomInteger(0,59)}` : `${getRandomInteger(1, 3)}h ${getRandomInteger(0,59)}m`;
+  return !isMoreHour ? `${getRandomInteger(1,59)}m` : `${getRandomInteger(1, 3)}h ${getRandomInteger(0,59)}m`;
 };
 
 const generateWritersList = () => {
@@ -174,4 +174,5 @@ export const generateFilm = () => ({
   isAddedWatch: Boolean(getRandomInteger(0, 1)),
   isAddedHistory: Boolean(getRandomInteger(0, 1)),
   isAddedFavorites: Boolean(getRandomInteger(0, 1)),
+  director: 'Ridli Scott',
 });

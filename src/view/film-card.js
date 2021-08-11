@@ -1,4 +1,6 @@
-export const createFilmCardTemplate = (film) => {
+import {createElement} from '../utils.js';
+
+const createFilmCardTemplate = (film) => {
   const {movieName, rating, productionYear, duration, genres, poster, description, comments, isAddedWatch, isAddedHistory, isAddedFavorites} = film;
 
   const addActiveClassCard = (booleanValue) => booleanValue ? 'film-card__controls-item--active' : '';
@@ -28,4 +30,27 @@ export const createFilmCardTemplate = (film) => {
             </div>
           </article>`;
 };
+
+export default class FilmCard {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createFilmCardTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
 
