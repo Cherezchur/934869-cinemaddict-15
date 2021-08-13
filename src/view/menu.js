@@ -1,3 +1,5 @@
+import {createElement} from '../utils.js';
+
 const createFilterLinkTemplate = (filters) => {
   const {name, count} = filters;
 
@@ -6,7 +8,7 @@ const createFilterLinkTemplate = (filters) => {
   );
 };
 
-export const createMenuTemplate = (filterLinks) => {
+const createMenuTemplate = (filterLinks) => {
   const filterLinksTemplate = filterLinks
     .map((filter, index) => createFilterLinkTemplate(filter, index === 0))
     .join('');
@@ -19,4 +21,27 @@ export const createMenuTemplate = (filterLinks) => {
             <a href="#stats" class="main-navigation__additional">Stats</a>
           </nav>`;
 };
+
+export default class Menu {
+  constructor(filters) {
+    this._filters = filters;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createMenuTemplate(this._filters);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
 

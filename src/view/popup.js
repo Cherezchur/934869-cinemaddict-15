@@ -1,4 +1,6 @@
-export const createPopupTemplate = (film) => {
+import {createElement} from '../utils.js';
+
+const createPopupTemplate = (film) => {
   const {movieName, rating, duration, genres, poster,
     description, comments, isAddedWatch, isAddedHistory,
     isAddedFavorites, ageRating, director, writers, actors,
@@ -11,7 +13,6 @@ export const createPopupTemplate = (film) => {
       const ganreItem = `<span class"film-details__genre">${element}</span>`;
       genresList += ` ${ganreItem}`;
     });
-
     return genresList;
   };
 
@@ -91,7 +92,7 @@ export const createPopupTemplate = (film) => {
                         <td class="film-details__cell">${country}</td>
                       </tr>
                       <tr class="film-details__row">
-                        <td class="film-details__term">Genres</td>
+                        <td class="film-details__term">Genr${genres.split(', ').length > 1 ? 'es' : 'e'}</td>
                         <td class="film-details__cell">${generateGenresSection()}</td>
                       </tr>
                     </table>
@@ -150,5 +151,27 @@ export const createPopupTemplate = (film) => {
               </div>
             </form>
           </section>`;
-
 };
+
+export default class Popup {
+  constructor(film) {
+    this._film = film;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createPopupTemplate(this._film);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
