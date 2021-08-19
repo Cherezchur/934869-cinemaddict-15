@@ -51,16 +51,11 @@ const renderFilm = (filmElement, film) => {
     document.addEventListener('keydown', onEscKeyDown);
   };
 
-  filmListComponent.getElement().querySelector('.film-card__poster').addEventListener('click', () => {
+  filmListComponent.setFilmCardClickHandler(() => {
     popupOpen();
   });
-  filmListComponent.getElement().querySelector('.film-card__title').addEventListener('click', () => {
-    popupOpen();
-  });
-  filmListComponent.getElement().querySelector('.film-card__comments').addEventListener('click', () => {
-    popupOpen();
-  });
-  filmPopupComponent.getElement().querySelector('.film-details__close-btn').addEventListener('click', () => {
+
+  filmPopupComponent.setCloseButtonClickHandler(() => {
     popupClose();
     document.removeEventListener('keydown', onEscKeyDown);
   });

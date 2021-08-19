@@ -1,4 +1,4 @@
-import dayjs from 'abstract.js';
+import dayjs from 'dayjs';
 import {getRandomInteger} from '../utils.js';
 
 const generatePosters = () => {
