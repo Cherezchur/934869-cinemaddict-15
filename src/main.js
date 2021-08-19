@@ -1,4 +1,4 @@
-import {RenderPosition, render, replace, remove, append} from './utils/render.js';
+import {RenderPosition, render, remove, append} from './utils/render.js';
 import ProfileTemplateView from './view/profile.js';
 import MenuView from './view/menu.js';
 import SortListTemplateView from './view/sort.js';
