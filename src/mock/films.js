@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import {getRandomInteger} from '../utils.js';
+import {getRandomInteger} from '../utils/common.js';
 
 const generatePosters = () => {
   const POSTERS_NAMES = [
