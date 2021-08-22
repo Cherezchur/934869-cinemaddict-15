@@ -3,8 +3,9 @@ import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 
 export default class Film {
-  constructor(filmListContainer) {
+  constructor(filmListContainer, changeData) {
     this._filmListContainer = filmListContainer;
+    this._changeData = changeData;
 
     this._filmComponet = null;
     this._popupComponent = null;
@@ -12,6 +13,9 @@ export default class Film {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handlerFilmCard = this._handlerFilmCard.bind(this);
     this._handlerCloseButton = this._handlerCloseButton.bind(this);
+    this._handlerAddedWatch = this._handlerAddedWatch.bind(this);
+    this._handlerAlreadyWatched = this._handlerAlreadyWatched.bind(this);
+    this._handlerAddedFavorites = this._handlerAddedFavorites.bind(this);
   }
 
   init(film) {
@@ -25,17 +29,22 @@ export default class Film {
     this._popupComponent = new PopupView(film);
 
     this._filmComponent.setFilmCardClickHandler(this._handlerFilmCard);
+    this._filmComponent.setAddedWatchClickHandler(this._handlerAddedWatch);
+    this._filmComponent.setAlreadyWatchedClickHandler(this._handlerAlreadyWatched);
+    this._filmComponent.setAddedFavoritesClickHandler(this._handlerAddedFavorites);
+
+    // console.log(this._filmListContainer);
 
     if(prevFilmComponent === null || prevPopupComponent === null) {
       render(this._filmListContainer, this._filmComponent, RenderPosition.BEFOREEND);
       return;
     }
 
-    if(this._filmListContainer.getElement().contains(prevFilmComponent.getElement())) {
+    if(this._filmListContainer.contains(prevFilmComponent.getElement())) {
       replace(this._filmComponent, prevFilmComponent);
     }
 
-    if(this._filmListContainer.getElement().contains(prevPopupComponent.getElement())) {
+    if(this._filmListContainer.contains(prevPopupComponent.getElement())) {
       replace(this._popupComponent, prevPopupComponent);
     }
 
@@ -79,4 +88,39 @@ export default class Film {
     this._closePopup();
   }
 
+  _handlerAddedWatch() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._film,
+        {
+          isAddedWatch: !this._film.isAddedWatch,
+        },
+      ),
+    );
+  }
+
+  _handlerAlreadyWatched() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._film,
+        {
+          isAddedHistory: !this._film.isAddedHistory,
+        },
+      ),
+    );
+  }
+
+  _handlerAddedFavorites() {
+    this._changeData(
+      Object.assign(
+        {},
+        this._film,
+        {
+          isAddedFavorites: !this._film.isAddedFavorites,
+        },
+      ),
+    );
+  }
 }

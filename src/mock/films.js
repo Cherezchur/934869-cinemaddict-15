@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import { nanoid } from 'nanoid';
 import {getRandomInteger} from '../utils/common.js';
 
 const generatePosters = () => {
@@ -158,10 +159,12 @@ const generateComments = () => {
 };
 
 export const generateFilm = () => ({
+  id: nanoid(),
   poster: generatePosters(),
   movieName: generateMovieNames(),
   rating: `${[getRandomInteger(5, 9)]}.${[getRandomInteger(0,9)]}`,
   productionYear: getRandomInteger(1921, 2021),
+  director: 'Ridli Scott',
   writers: generateWritersList(),
   actors: generateActorList(),
   relizeDate: getRelizeDate(),
@@ -174,5 +177,4 @@ export const generateFilm = () => ({
   isAddedWatch: Boolean(getRandomInteger(0, 1)),
   isAddedHistory: Boolean(getRandomInteger(0, 1)),
   isAddedFavorites: Boolean(getRandomInteger(0, 1)),
-  director: 'Ridli Scott',
 });
