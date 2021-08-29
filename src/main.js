@@ -3,7 +3,7 @@ import ProfileTemplateView from './view/profile.js';
 import MenuView from './view/menu.js';
 import {generateFilm} from './mock/films.js';
 import {generateFilter} from './mock/filter.js';
-import FilmsListPresenter from './presenter/filmsList.js';
+import FilmsListPresenter from './presenter/filmsList-presenter.js';
 
 const FILMS_COUNT = 22;
 

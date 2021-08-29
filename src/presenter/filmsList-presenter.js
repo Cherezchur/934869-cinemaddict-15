@@ -28,6 +28,7 @@ export default class FilmsList {
 
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
+    this._handleModeChange = this._handleModeChange.bind(this);
     this._sortFilmsContainer = this._sortSectionComponent.getElement().querySelector('.films-list__container');
     this._topFilmsContainer = this._topFilmsComponent.getElement().querySelector('.top-rated__container');
     this._mostCommentedFilmsContainer = this._mostCommentedComponent.getElement().querySelector('.most-commented__container');
@@ -44,13 +45,17 @@ export default class FilmsList {
     this._renderFilmsSections();
   }
 
+  _handleModeChange() {
+    this._filmPresenter.forEach((presenter) => presenter.resetView());
+  }
+
   _handleFilmChange(updatedFilm) {
     this._films = updateItem(this._films, updatedFilm);
     this._filmPresenter.get(updatedFilm.id).init(updatedFilm);
   }
 
   _renderFilm(filmElement, film) {
-    const filmPresenter = new FilmPresenter(filmElement, this._handleFilmChange);
+    const filmPresenter = new FilmPresenter(filmElement, this._handleFilmChange, this._handleModeChange);
     filmPresenter.init(film);
     this._filmPresenter.set(film.id, filmPresenter);
   }
