@@ -8,6 +8,8 @@ import ShowMoreButtonTemplateView from '../view/show-more-button.js';
 import listEmptyView from '../view/list-empty.js';
 import FilmPresenter from './film-presenter.js';
 import { updateItem } from '../utils/common.js';
+import { SortType } from '../const.js';
+import { sortDateDown, sortRatingDown } from '../utils/film-utils.js';
 
 const FILMS_COUNT_PERS_STEP = 5;
 // const EXTRA_FILMS_COUNT = 2;
@@ -17,6 +19,7 @@ export default class FilmsList {
     this._movieListContainer = movieListContainer;
     this._renderedFilmCount = FILMS_COUNT_PERS_STEP;
     this._filmPresenter = new Map();
+    this._currentSortType = SortType.DEFAULT;
 
     this._sitefilmsSection = new filmsSectionTemplateView();
     this._listEmptyComponent = new listEmptyView();
@@ -29,6 +32,7 @@ export default class FilmsList {
     this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handlerSortTypeChange = this._handlerSortTypeChange.bind(this);
     this._sortFilmsContainer = this._sortSectionComponent.getElement().querySelector('.films-list__container');
     this._topFilmsContainer = this._topFilmsComponent.getElement().querySelector('.top-rated__container');
     this._mostCommentedFilmsContainer = this._mostCommentedComponent.getElement().querySelector('.most-commented__container');
@@ -92,10 +96,39 @@ export default class FilmsList {
     this._showMoreButtonComponent.setShowMoreClickHandler(this._handleShowMoreButtonClick);
   }
 
-  _renderSortSection() {
-    render(this._sitefilmsSection, this._sortListComponent, RenderPosition.BEFOREEND);
-    render(this._sitefilmsSection, this._sortSectionComponent, RenderPosition.BEFOREEND);
+  _sortFilms(sortType) {
+    switch (sortType) {
+      case SortType.DATE:
+        this._films.sort(sortDateDown);
+        break;
+      case SortType.RATING:
+        this._films.sort(sortRatingDown);
+        break;
+      default:
+        this._films = this._sourcedfilms.slice();
+    }
 
+    this._currentSortType = sortType;
+  }
+
+  _handlerSortTypeChange(sortType) {
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    this._sortFilms(sortType);
+    this._clearFilmList();
+    this._renderFilmsSections();
+  }
+
+  _renderSortComponent() {
+    render(this._sitefilmsSection, this._sortListComponent, RenderPosition.BEFOREEND);
+    this._sortListComponent.setSortTypeChangeHandler(this._handlerSortTypeChange);
+  }
+
+  _renderSortSection() {
+    this._renderSortComponent();
+    render(this._sitefilmsSection, this._sortSectionComponent, RenderPosition.BEFOREEND);
     this._renderFilms(0, Math.min(this._films.length, FILMS_COUNT_PERS_STEP), this._sortFilmsContainer);
 
     if(this._films.length >= FILMS_COUNT_PERS_STEP) {
