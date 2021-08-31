@@ -18,11 +18,11 @@ export default class Film {
     this._mode = Mode.DEFAULT;
 
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-    this._handlerFilmCard = this._handlerFilmCard.bind(this);
-    this._handlerCloseButton = this._handlerCloseButton.bind(this);
-    this._handlerAddedWatch = this._handlerAddedWatch.bind(this);
-    this._handlerAlreadyWatched = this._handlerAlreadyWatched.bind(this);
-    this._handlerAddedFavorites = this._handlerAddedFavorites.bind(this);
+    this._addFilmCardHandler = this._addFilmCardHandler.bind(this);
+    this._addCloseButtonHandler = this._addCloseButtonHandler.bind(this);
+    this._addWatchListHanddler = this._addWatchListHanddler.bind(this);
+    this._addAlreadyWatchedListHandler = this._addAlreadyWatchedListHandler.bind(this);
+    this._addFavoritesListHandler = this._addFavoritesListHandler.bind(this);
   }
 
   init(film) {
@@ -35,14 +35,14 @@ export default class Film {
     this._filmComponent = new FilmCardView(film);
     this._popupComponent = new PopupView(film);
 
-    this._filmComponent.setFilmCardClickHandler(this._handlerFilmCard);
-    this._filmComponent.setAddedWatchClickHandler(this._handlerAddedWatch);
-    this._filmComponent.setAlreadyWatchedClickHandler(this._handlerAlreadyWatched);
-    this._filmComponent.setAddedFavoritesClickHandler(this._handlerAddedFavorites);
-    this._popupComponent.setCloseButtonClickHandler(this._handlerCloseButton);
-    this._popupComponent.setAddedWatchPopupClickHandler(this._handlerAddedWatch);
-    this._popupComponent.setAlreadyWatchedPopupClickHandler(this._handlerAlreadyWatched);
-    this._popupComponent.setAddedFavoritesPopupClickHandler(this._handlerAddedFavorites);
+    this._filmComponent.setFilmCardClickHandler(this._addFilmCardHandler);
+    this._filmComponent.setAddedWatchClickHandler(this._addWatchListHanddler);
+    this._filmComponent.setAlreadyWatchedClickHandler(this._addAlreadyWatchedListHandler);
+    this._filmComponent.setAddedFavoritesClickHandler(this._addFavoritesListHandler);
+    this._popupComponent.setCloseButtonClickHandler(this._addCloseButtonHandler);
+    this._popupComponent.setAddedWatchPopupClickHandler(this._addWatchListHanddler);
+    this._popupComponent.setAlreadyWatchedPopupClickHandler(this._addAlreadyWatchedListHandler);
+    this._popupComponent.setAddedFavoritesPopupClickHandler(this._addFavoritesListHandler);
 
     if(prevFilmComponent === null || prevPopupComponent === null) {
       render(this._filmListContainer, this._filmComponent, RenderPosition.BEFOREEND);
@@ -86,30 +86,32 @@ export default class Film {
     this._mode = Mode.POPUP_OPEN;
 
     append(this._popupComponent, this._pageBody);
-    this._popupComponent.setCloseButtonClickHandler(this._handlerCloseButton);
-    this._popupComponent.setAddedWatchPopupClickHandler(this._handlerAddedWatch);
-    this._popupComponent.setAlreadyWatchedPopupClickHandler(this._handlerAlreadyWatched);
-    this._popupComponent.setAddedFavoritesPopupClickHandler(this._handlerAddedFavorites);
+    this._popupComponent.setCloseButtonClickHandler(this._addCloseButtonHandler);
+    this._popupComponent.setAddedWatchPopupClickHandler(this._addWatchListHanddler);
+    this._popupComponent.setAlreadyWatchedPopupClickHandler(this._addAlreadyWatchedListHandler);
+    this._popupComponent.setAddedFavoritesPopupClickHandler(this._addFavoritesListHandler);
     this._pageBody.classList.add('hide-overflow');
     document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
   _escKeyDownHandler(evt) {
-    if (evt.key === 'Escape' || evt.key === 'Esc') {
-      evt.preventDefault();
-      this._closePopup();
+    if (evt.key !== 'Escape' && evt.key !== 'Esc') {
+      return;
     }
-  }
 
-  _handlerFilmCard() {
-    this._openPopup();
-  }
-
-  _handlerCloseButton() {
+    evt.preventDefault();
     this._closePopup();
   }
 
-  _handlerAddedWatch() {
+  _addFilmCardHandler() {
+    this._openPopup();
+  }
+
+  _addCloseButtonHandler() {
+    this._closePopup();
+  }
+
+  _addWatchListHanddler() {
     this._changeData(
       Object.assign(
         {},
@@ -121,7 +123,7 @@ export default class Film {
     );
   }
 
-  _handlerAlreadyWatched() {
+  _addAlreadyWatchedListHandler() {
     this._changeData(
       Object.assign(
         {},
@@ -133,7 +135,7 @@ export default class Film {
     );
   }
 
-  _handlerAddedFavorites() {
+  _addFavoritesListHandler() {
     this._changeData(
       Object.assign(
         {},
