@@ -1,10 +1,10 @@
-import AbstractView from './abstract.js';
+import SmartView from './smart.js';
 
-const createPopupTemplate = (film) => {
+const createPopupTemplate = (data) => {
   const {movieName, rating, duration, genres, poster,
-    description, comments, isAddedWatch, isAddedHistory,
-    isAddedFavorites, ageRating, director, writers, actors,
-    relizeDate, country} = film;
+    description, comments, addedWatch, addedHistory,
+    addedFavorites, ageRating, director, writers, actors,
+    relizeDate, country} = data;
 
   const generateGenresSection = () => {
     let genresList = '';
@@ -104,9 +104,9 @@ const createPopupTemplate = (film) => {
                 </div>
 
                 <section class="film-details__controls">
-                  <button type="button" class="film-details__control-button film-details__control-button--watchlist ${addActiveClassFilm(isAddedWatch)}" id="watchlist" name="watchlist">Add to watchlist</button>
-                  <button type="button" class="film-details__control-button film-details__control-button--watched ${addActiveClassFilm(isAddedHistory)}" id="watched" name="watched">Already watched</button>
-                  <button type="button" class="film-details__control-button film-details__control-button--favorite ${addActiveClassFilm(isAddedFavorites)}" id="favorite" name="favorite">Add to favorites</button>
+                  <button type="button" class="film-details__control-button film-details__control-button--watchlist ${addActiveClassFilm(addedWatch)}" id="watchlist" name="watchlist">Add to watchlist</button>
+                  <button type="button" class="film-details__control-button film-details__control-button--watched ${addActiveClassFilm(addedHistory)}" id="watched" name="watched">Already watched</button>
+                  <button type="button" class="film-details__control-button film-details__control-button--favorite ${addActiveClassFilm(addedFavorites)}" id="favorite" name="favorite">Add to favorites</button>
                 </section>
               </div>
 
@@ -153,19 +153,67 @@ const createPopupTemplate = (film) => {
           </section>`;
 };
 
-export default class Popup extends AbstractView {
+export default class Popup extends SmartView {
   constructor(film) {
     super();
-    this._film = film;
+    this._data = Popup.parseFilmToData(film);
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
     this._addedWatchPopupClickHandler = this._addedWatchPopupClickHandler.bind(this);
     this._alreadyWatchedPopupClickHandler = this._alreadyWatchedPopupClickHandler.bind(this);
     this._addedFavoritesPopupClickHandler = this._addedFavoritesPopupClickHandler.bind(this);
+    this._addEmojiClickHandler = this._addEmojiClickHandler.bind(this);
+    this._descriptionTextareaHandler = this._descriptionTextareaHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return createPopupTemplate(this._film);
+    return createPopupTemplate(this._data);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setCloseButtonClickHandler(this._callback.closeButtonClick);
+    this.setAddedWatchPopupClickHandler(this._callback.addedWatchPopupClick);
+    this.setAlreadyWatchedPopupClickHandler(this._callback.alreadyWatchedPopupClick);
+    this.setAddedFavoritesPopupClickHandler(this._callback.addedFavoritesPopupClick);
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector('#emoji-smile')
+      .addEventListener('click', this._addEmojiClickHandler);
+    this.getElement()
+      .querySelector('#emoji-sleeping')
+      .addEventListener('click', this._addEmojiClickHandler);
+    this.getElement()
+      .querySelector('#emoji-puke')
+      .addEventListener('click', this._addEmojiClickHandler);
+    this.getElement()
+      .querySelector('#emoji-angry')
+      .addEventListener('click', this._addEmojiClickHandler);
+    this.getElement()
+      .querySelector('.film-details__comment-input')
+      .addEventListener('input', this._descriptionTextareaHandler);
+  }
+
+  _descriptionTextareaHandler(evt) {
+    evt.preventDefault();
+    this._data.newComment.text = evt.target.value;
+    // const updateCommentText = this._data.newComment.text;
+    // this.updateData(updateCommentText, true);
+  }
+
+  _addEmojiClickHandler(evt) {
+    evt.preventDefault();
+
+    const addEmojiContainer = this.getElement().querySelector('.film-details__add-emoji-label');
+    addEmojiContainer.innerHTML = `<img src="images/emoji/${evt.target.value}.png" width="55" height="55" alt="emoji-smile">`;
+
+    this._data.newComment.emotion = evt.target.value;
+
+    this.updateData();
   }
 
   _closeButtonClickHandler(evt) {
@@ -206,5 +254,31 @@ export default class Popup extends AbstractView {
   setAddedFavoritesPopupClickHandler(callback) {
     this._callback.addedFavoritesPopupClick = callback;
     this.getElement().querySelector('#favorite').addEventListener('click', this._addedFavoritesPopupClickHandler);
+  }
+
+  static parseFilmToData(film) {
+
+    const newComment = new Object({
+      text: '',
+      emotion: '',
+      author: 'nobody',
+      date: 'now',
+    });
+
+    return Object.assign(
+      {},
+      film,
+      {
+        newComment,
+      },
+    );
+
+  }
+
+  static parseDataToFilm(data) {
+    delete data.newComment;
+
+    data = Object.assign({}, data);
+    return data;
   }
 }

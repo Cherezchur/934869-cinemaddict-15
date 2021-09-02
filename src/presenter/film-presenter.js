@@ -90,6 +90,7 @@ export default class Film {
     this._popupComponent.setAddedWatchPopupClickHandler(this._addWatchListHanddler);
     this._popupComponent.setAlreadyWatchedPopupClickHandler(this._addAlreadyWatchedListHandler);
     this._popupComponent.setAddedFavoritesPopupClickHandler(this._addFavoritesListHandler);
+
     this._pageBody.classList.add('hide-overflow');
     document.addEventListener('keydown', this._escKeyDownHandler);
   }
@@ -117,7 +118,7 @@ export default class Film {
         {},
         this._film,
         {
-          isAddedWatch: !this._film.isAddedWatch,
+          addedWatch: !this._film.addedWatch,
         },
       ),
     );
@@ -129,7 +130,7 @@ export default class Film {
         {},
         this._film,
         {
-          isAddedHistory: !this._film.isAddedHistory,
+          addedHistory: !this._film.addedHistory,
         },
       ),
     );
@@ -141,7 +142,7 @@ export default class Film {
         {},
         this._film,
         {
-          isAddedFavorites: !this._film.isAddedFavorites,
+          addedFavorites: !this._film.addedFavorites,
         },
       ),
     );

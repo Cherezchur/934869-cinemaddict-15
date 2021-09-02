@@ -12,3 +12,11 @@ export const sortRatingDown = (filmA, filmB) => {
   return filmRatingB - filmRatingA;
 };
 
+export const isThereComments = (comments) => {
+  if(comments.length > 0) {
+    return true;
+  }
+
+  return false;
+};
+
