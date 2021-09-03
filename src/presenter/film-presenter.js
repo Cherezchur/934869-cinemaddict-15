@@ -90,6 +90,7 @@ export default class Film {
     this._popupComponent.setAddedWatchPopupClickHandler(this._addWatchListHanddler);
     this._popupComponent.setAlreadyWatchedPopupClickHandler(this._addAlreadyWatchedListHandler);
     this._popupComponent.setAddedFavoritesPopupClickHandler(this._addFavoritesListHandler);
+    this._popupComponent.restoreHandlers();
 
     this._pageBody.classList.add('hide-overflow');
     document.addEventListener('keydown', this._escKeyDownHandler);

@@ -1,4 +1,6 @@
 import SmartView from './smart.js';
+import { SUBMIT_KEY_CODE } from '../const.js';
+import dayjs from 'dayjs';
 
 const createPopupTemplate = (data) => {
   const {movieName, rating, duration, genres, poster,
@@ -164,8 +166,8 @@ export default class Popup extends SmartView {
     this._addedFavoritesPopupClickHandler = this._addedFavoritesPopupClickHandler.bind(this);
     this._addEmojiClickHandler = this._addEmojiClickHandler.bind(this);
     this._descriptionTextareaHandler = this._descriptionTextareaHandler.bind(this);
-
     this._setInnerHandlers();
+    this._newCommentKeyDownHandler();
   }
 
   getTemplate() {
@@ -198,11 +200,56 @@ export default class Popup extends SmartView {
       .addEventListener('input', this._descriptionTextareaHandler);
   }
 
+  checkingKeystrokes(evt, pressed) {
+    pressed.add(evt.code);
+
+    for (const code of SUBMIT_KEY_CODE) {
+      if (!pressed.has(code)) {
+        return;
+      }
+    }
+    pressed.clear();
+
+    if(this._data.newComment.text === '' || this._data.newComment.emotion === '') {
+      return;
+    }
+
+    const popupScrollLevel = window.scrollY;
+
+    this.updateComment();
+
+    window.scroll(0, popupScrollLevel);
+  }
+
+  updateComment() {
+    this._data.newComment.date = dayjs().format('YYYY/MM/DD HH:mm');
+    this._data.comments.push(this._data.newComment);
+
+    this.updateData(this._data, false);
+
+    this._data.newComment = new Object({
+      text: '',
+      emotion: '',
+      author: 'nobody',
+      date: '',
+    });
+  }
+
+  _newCommentKeyDownHandler() {
+    const pressed = new Set();
+
+    document.addEventListener('keydown', (evt) => {
+      this.checkingKeystrokes(evt, pressed);
+    });
+  }
+
   _descriptionTextareaHandler(evt) {
     evt.preventDefault();
     this._data.newComment.text = evt.target.value;
-    // const updateCommentText = this._data.newComment.text;
-    // this.updateData(updateCommentText, true);
+
+    this.updateData({
+      commentText: evt.target.value,
+    }, true);
   }
 
   _addEmojiClickHandler(evt) {
@@ -213,7 +260,9 @@ export default class Popup extends SmartView {
 
     this._data.newComment.emotion = evt.target.value;
 
-    this.updateData();
+    this.updateData({
+      emotion: evt.target.value,
+    }, true);
   }
 
   _closeButtonClickHandler(evt) {
@@ -262,7 +311,7 @@ export default class Popup extends SmartView {
       text: '',
       emotion: '',
       author: 'nobody',
-      date: 'now',
+      date: '',
     });
 
     return Object.assign(
