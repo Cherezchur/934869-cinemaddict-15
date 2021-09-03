@@ -178,7 +178,7 @@ export default class Popup extends SmartView {
     this._setInnerHandlers();
     this.setCloseButtonClickHandler(this._callback.closeButtonClick);
     this.setAddedWatchPopupClickHandler(this._callback.addedWatchPopupClick);
-    this.setAlreadyWatchedPopupClickHandler(this._callback.alreadyWatchedPopupClick);
+    this.setWatchedPopupClickHandler(this._callback.alreadyWatchedPopupClick);
     this.setAddedFavoritesPopupClickHandler(this._callback.addedFavoritesPopupClick);
   }
 
@@ -295,7 +295,7 @@ export default class Popup extends SmartView {
     this.getElement().querySelector('#watchlist').addEventListener('click', this._addedWatchPopupClickHandler);
   }
 
-  setAlreadyWatchedPopupClickHandler(callback) {
+  setWatchedPopupClickHandler(callback) {
     this._callback.alreadyWatchedPopupClick = callback;
     this.getElement().querySelector('#watched').addEventListener('click', this._alreadyWatchedPopupClickHandler);
   }

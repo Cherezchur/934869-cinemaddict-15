@@ -1,16 +1,6 @@
-export const sortDateDown = (filmA, filmB) => {
-  const filmDateA = filmA.productionYear;
-  const filmDateB = filmB.productionYear;
+export const sortDateDown = (filmA, filmB) => filmB.productionYear - filmA.productionYear;
 
-  return filmDateB - filmDateA;
-};
-
-export const sortRatingDown = (filmA, filmB) => {
-  const filmRatingA = filmA.rating;
-  const filmRatingB = filmB.rating;
-
-  return filmRatingB - filmRatingA;
-};
+export const sortRatingDown = (filmA, filmB) => filmB.rating - filmA.rating;
 
 export const isThereComments = (comments) => {
   if(comments.length > 0) {

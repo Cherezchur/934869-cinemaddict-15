@@ -18,10 +18,10 @@ export default class Film {
     this._mode = Mode.DEFAULT;
 
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
-    this._addFilmCardHandler = this._addFilmCardHandler.bind(this);
+    this._openPopupHandler = this._openPopupHandler.bind(this);
     this._addCloseButtonHandler = this._addCloseButtonHandler.bind(this);
     this._addWatchListHanddler = this._addWatchListHanddler.bind(this);
-    this._addAlreadyWatchedListHandler = this._addAlreadyWatchedListHandler.bind(this);
+    this._addWatchedListHandler = this._addWatchedListHandler.bind(this);
     this._addFavoritesListHandler = this._addFavoritesListHandler.bind(this);
   }
 
@@ -35,13 +35,13 @@ export default class Film {
     this._filmComponent = new FilmCardView(film);
     this._popupComponent = new PopupView(film);
 
-    this._filmComponent.setFilmCardClickHandler(this._addFilmCardHandler);
+    this._filmComponent.setFilmCardClickHandler(this._openPopupHandler);
     this._filmComponent.setAddedWatchClickHandler(this._addWatchListHanddler);
-    this._filmComponent.setAlreadyWatchedClickHandler(this._addAlreadyWatchedListHandler);
+    this._filmComponent.setWatchedClickHandler(this._addWatchedListHandler);
     this._filmComponent.setAddedFavoritesClickHandler(this._addFavoritesListHandler);
     this._popupComponent.setCloseButtonClickHandler(this._addCloseButtonHandler);
     this._popupComponent.setAddedWatchPopupClickHandler(this._addWatchListHanddler);
-    this._popupComponent.setAlreadyWatchedPopupClickHandler(this._addAlreadyWatchedListHandler);
+    this._popupComponent.setWatchedPopupClickHandler(this._addWatchedListHandler);
     this._popupComponent.setAddedFavoritesPopupClickHandler(this._addFavoritesListHandler);
 
     if(prevFilmComponent === null || prevPopupComponent === null) {
@@ -88,7 +88,7 @@ export default class Film {
     append(this._popupComponent, this._pageBody);
     this._popupComponent.setCloseButtonClickHandler(this._addCloseButtonHandler);
     this._popupComponent.setAddedWatchPopupClickHandler(this._addWatchListHanddler);
-    this._popupComponent.setAlreadyWatchedPopupClickHandler(this._addAlreadyWatchedListHandler);
+    this._popupComponent.setWatchedPopupClickHandler(this._addWatchedListHandler);
     this._popupComponent.setAddedFavoritesPopupClickHandler(this._addFavoritesListHandler);
     this._popupComponent.restoreHandlers();
 
@@ -105,7 +105,7 @@ export default class Film {
     this._closePopup();
   }
 
-  _addFilmCardHandler() {
+  _openPopupHandler() {
     this._openPopup();
   }
 
@@ -125,7 +125,7 @@ export default class Film {
     );
   }
 
-  _addAlreadyWatchedListHandler() {
+  _addWatchedListHandler() {
     this._changeData(
       Object.assign(
         {},
