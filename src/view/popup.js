@@ -1,6 +1,4 @@
 import SmartView from './smart.js';
-import { SUBMIT_KEY_CODE } from '../const.js';
-import dayjs from 'dayjs';
 
 const createPopupTemplate = (data) => {
   const {movieName, rating, duration, genres, poster,
@@ -166,8 +164,9 @@ export default class Popup extends SmartView {
     this._addedFavoritesPopupClickHandler = this._addedFavoritesPopupClickHandler.bind(this);
     this._addEmojiClickHandler = this._addEmojiClickHandler.bind(this);
     this._descriptionTextareaHandler = this._descriptionTextareaHandler.bind(this);
+    this._newCommentHandler = this._newCommentHandler.bind(this);
     this._setInnerHandlers();
-    this._newCommentKeyDownHandler();
+    // this._newCommentKeyDownHandler();
   }
 
   getTemplate() {
@@ -180,6 +179,7 @@ export default class Popup extends SmartView {
     this.setAddedWatchPopupClickHandler(this._callback.addedWatchPopupClick);
     this.setWatchedPopupClickHandler(this._callback.alreadyWatchedPopupClick);
     this.setAddedFavoritesPopupClickHandler(this._callback.addedFavoritesPopupClick);
+    // this.setNewCommentKeyDowHandler(this._callback.newCommentKeyDown);
   }
 
   _setInnerHandlers() {
@@ -200,48 +200,48 @@ export default class Popup extends SmartView {
       .addEventListener('input', this._descriptionTextareaHandler);
   }
 
-  checkingKeystrokes(evt, pressed) {
-    pressed.add(evt.code);
+  // checkingKeystrokes(evt, pressed) {
+  //   pressed.add(evt.code);
 
-    for (const code of SUBMIT_KEY_CODE) {
-      if (!pressed.has(code)) {
-        return;
-      }
-    }
-    pressed.clear();
+  //   for (const code of SUBMIT_KEY_CODE) {
+  //     if (!pressed.has(code)) {
+  //       return;
+  //     }
+  //   }
+  //   pressed.clear();
 
-    if(this._data.newComment.text === '' || this._data.newComment.emotion === '') {
-      return;
-    }
+  //   if(this._data.newComment.text === '' || this._data.newComment.emotion === '') {
+  //     return;
+  //   }
 
-    const popupScrollLevel = window.scrollY;
+  //   const popupScrollLevel = window.scrollY;
 
-    this.updateComment();
+  //   this.updateComment();
 
-    window.scroll(0, popupScrollLevel);
-  }
+  //   window.scroll(0, popupScrollLevel);
+  // }
 
-  updateComment() {
-    this._data.newComment.date = dayjs().format('YYYY/MM/DD HH:mm');
-    this._data.comments.push(this._data.newComment);
+  // updateComment() {
+  //   this._data.newComment.date = dayjs().format('YYYY/MM/DD HH:mm');
+  //   this._data.comments.push(this._data.newComment);
 
-    this.updateData(this._data, false);
+  //   this.updateData(this._data, false);
 
-    this._data.newComment = new Object({
-      text: '',
-      emotion: '',
-      author: 'nobody',
-      date: '',
-    });
-  }
+  //   this._data.newComment = new Object({
+  //     text: '',
+  //     emotion: '',
+  //     author: 'nobody',
+  //     date: '',
+  //   });
+  // }
 
-  _newCommentKeyDownHandler() {
-    const pressed = new Set();
+  // _newCommentKeyDownHandler() {
+  //   const pressed = new Set();
 
-    document.addEventListener('keydown', (evt) => {
-      this.checkingKeystrokes(evt, pressed);
-    });
-  }
+  //   document.addEventListener('keydown', (evt) => {
+  //     this.checkingKeystrokes(evt, pressed);
+  //   });
+  // }
 
   _descriptionTextareaHandler(evt) {
     evt.preventDefault();
@@ -285,6 +285,16 @@ export default class Popup extends SmartView {
     this._callback.addedFavoritesPopupClick();
   }
 
+  _newCommentHandler(evt) {
+    const keyCode = evt.key;
+    this._callback.newCommentKeyDown(keyCode, this._data);
+  }
+
+  setNewCommentKeyDowHandler(callback) {
+    this._callback.newCommentKeyDown = callback;
+    document.addEventListener('keydown', this._newCommentHandler);
+  }
+
   setCloseButtonClickHandler(callback) {
     this._callback.closeButtonClick = callback;
     this.getElement().querySelector('.film-details__close-btn').addEventListener('click', this._closeButtonClickHandler);
@@ -307,12 +317,12 @@ export default class Popup extends SmartView {
 
   static parseFilmToData(film) {
 
-    const newComment = new Object({
+    const newComment = {
       text: '',
       emotion: '',
       author: 'nobody',
       date: '',
-    });
+    };
 
     return Object.assign(
       {},

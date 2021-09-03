@@ -4,4 +4,4 @@ export const SortType = {
   RATING: 'rating',
 };
 
-export const SUBMIT_KEY_CODE = ['ControlLeft', 'Enter'];
+export const SUBMIT_KEY_CODE = ['Control', 'Enter'];
