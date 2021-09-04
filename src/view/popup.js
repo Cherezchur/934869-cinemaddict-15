@@ -6,6 +6,9 @@ const createPopupTemplate = (data) => {
     favorite, ageRating, director, writers, actors,
     relizeDate, country} = data;
 
+  console.log(movieName);
+  console.log(genres);
+
   const generateGenresSection = () => {
     let genresList = '';
 
