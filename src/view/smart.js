@@ -20,7 +20,6 @@ export default class Smart extends Abstract {
 
     this.updateElement();
 
-
   }
 
   updateElement() {
