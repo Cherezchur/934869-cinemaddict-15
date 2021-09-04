@@ -232,7 +232,6 @@ export default class Popup extends SmartView {
 
   _newCommentHandler(evt) {
     const keyCode = evt.key;
-    console.log('new event');
     this._callback.newCommentKeyDown(keyCode, this._data);
   }
 

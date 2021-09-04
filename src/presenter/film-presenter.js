@@ -132,8 +132,6 @@ export default class Film {
 
     this._pressed.add(keyCode);
 
-    console.log(this._pressed);
-
     if(this._pressed.size > 2) {
       this._pressed.clear();
     }
