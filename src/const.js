@@ -3,3 +3,5 @@ export const SortType = {
   DATE: 'date',
   RATING: 'rating',
 };
+
+export const SUBMIT_KEY_CODE = ['Control', 'Enter'];
