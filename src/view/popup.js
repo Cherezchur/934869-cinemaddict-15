@@ -6,9 +6,6 @@ const createPopupTemplate = (data) => {
     favorite, ageRating, director, writers, actors,
     relizeDate, country} = data;
 
-  console.log(movieName);
-  console.log(genres);
-
   const generateGenresSection = () => {
     let genresList = '';
 
@@ -174,6 +171,13 @@ export default class Popup extends SmartView {
     return createPopupTemplate(this._data);
   }
 
+  updateElement(newData) {
+    this._data = Popup.parseFilmToData(newData);
+    const scrollLevel = this.getElement().scrollTop;
+    super.updateElement();
+    this.getElement().scrollTop = scrollLevel;
+  }
+
   restoreHandlers() {
     this._setInnerHandlers();
     this.setCloseButtonClickHandler(this._callback.closeButtonClick);
@@ -201,6 +205,10 @@ export default class Popup extends SmartView {
 
   _addEmojiClickHandler(evt) {
     evt.preventDefault();
+
+    if(evt.target.tagName !== 'IMG') {
+      return;
+    }
 
     const addEmojiContainer = this.getElement().querySelector('.film-details__add-emoji-label');
     addEmojiContainer.innerHTML = `<img src="./images/emoji/${evt.target.dataset.name}.png" width="55" height="55" alt="emoji-smile">`;

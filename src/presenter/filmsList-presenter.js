@@ -7,7 +7,7 @@ import MostCommentedTemplateView from '../view/most-commented-films.js';
 import ShowMoreButtonTemplateView from '../view/show-more-button.js';
 import listEmptyView from '../view/list-empty.js';
 import FilmPresenter from './film-presenter.js';
-import { SortType } from '../const.js';
+import { SortType, UpdateType, UserAction } from '../const.js';
 import { sortDateDown, sortRatingDown } from '../utils/film-utils.js';
 
 const FILMS_COUNT_PER_STEP = 5;
@@ -33,9 +33,14 @@ export default class FilmsList {
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handlerSortTypeChange = this._handlerSortTypeChange.bind(this);
+    this._handleViewAction = this._handleViewAction.bind(this);
+    this._handleModelEvent = this._handleModelEvent.bind(this);
+
     this._sortFilmsContainer = this._sortSectionComponent.getElement().querySelector('.films-list__container');
     this._topFilmsContainer = this._topFilmsComponent.getElement().querySelector('.top-rated__container');
     this._mostCommentedFilmsContainer = this._mostCommentedComponent.getElement().querySelector('.most-commented__container');
+
+    this._tasksModel.addObserver(this._handleModelEvent);
   }
 
   init() {
@@ -56,6 +61,45 @@ export default class FilmsList {
     return this._filmsModel.getFilms();
   }
 
+  _handleViewAction(actionType, updateType, update) {
+    console.log(actionType, updateType, update);
+    // Здесь будем вызывать обновление модели.
+    // actionType - действие пользователя, нужно чтобы понять, какой метод модели вызвать
+    // updateType - тип изменений, нужно чтобы понять, что после нужно обновить
+    // update - обновленные данные
+    switch (actionType) {
+      case UserAction.UPDATE_FILM:
+        this._tasksModel.updateTask(updateType, update);
+        break;
+      // case UserAction.ADD_TASK:
+      //   this._tasksModel.addTask(updateType, update);
+      //   break;
+      // case UserAction.DELETE_TASK:
+      //   this._tasksModel.deleteTask(updateType, update);
+      //   break;
+    }
+  }
+
+  _handleModelEvent(updateType, data) {
+    console.log(updateType, data);
+    // В зависимости от типа изменений решаем, что делать:
+    // - обновить часть списка (например, когда поменялось описание) - Обновить фильм (новый комментарий)
+    // - обновить список (например, когда задача ушла в архив) - Обновить фильм и фильты (добавление в список фильмов)
+    // - обновить всю доску (например, при переключении фильтра) - Обновить список (Сотировка)
+    switch (updateType) {
+      case UpdateType.PATCH:
+        // - обновить часть списка (например, когда поменялось описание)
+        this._filmPresenter.get(data.id).init(data);
+        break;
+      case UpdateType.MINOR:
+        // - обновить список (например, когда задача ушла в архив)
+        break;
+      case UpdateType.MAJOR:
+        // - обновить всю доску (например, при переключении фильтра)
+        break;
+    }
+  }
+
   _handleModeChange() {
     this._filmPresenter.forEach((presenter) => presenter.resetView());
   }
@@ -65,7 +109,7 @@ export default class FilmsList {
   }
 
   _renderFilm(filmElement, film) {
-    const filmPresenter = new FilmPresenter(filmElement, this._handleFilmChange, this._handleModeChange);
+    const filmPresenter = new FilmPresenter(filmElement, this._handleViewAction, this._handleModeChange);
     filmPresenter.init(film);
     this._filmPresenter.set(film.id, filmPresenter);
   }
@@ -78,7 +122,7 @@ export default class FilmsList {
   }
 
   _renderFilms(films) {
-    films.forEach((film) => this._renderFilm(film));
+    films.forEach((film) => this._renderFilm(this._sortFilmsContainer, film));
   }
 
   _renderNoFilms() {
@@ -124,7 +168,7 @@ export default class FilmsList {
     render(this._sitefilmsSection, this._sortSectionComponent, RenderPosition.BEFOREEND);
 
     const filmCount = this._getFilms().length;
-    const films = this._getFilms().slice(0, Math.min(filmCount, FILMS_COUNT_PER_STEP), this._sortFilmsContainer);
+    const films = this._getFilms().slice(0, Math.min(filmCount, FILMS_COUNT_PER_STEP));
 
     this._renderFilms(films);
 

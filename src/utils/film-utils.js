@@ -3,10 +3,6 @@ export const sortDateDown = (filmA, filmB) => filmB.productionYear - filmA.produ
 export const sortRatingDown = (filmA, filmB) => filmB.rating - filmA.rating;
 
 export const isThereComments = (comments) => {
-  if(comments.length > 0) {
-    return true;
-  }
-
-  return false;
+  comments.length > 0;
 };
 
