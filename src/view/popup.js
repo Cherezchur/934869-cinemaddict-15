@@ -164,7 +164,6 @@ export default class Popup extends SmartView {
     this._descriptionTextareaHandler = this._descriptionTextareaHandler.bind(this);
     this._newCommentHandler = this._newCommentHandler.bind(this);
     this._setInnerHandlers();
-    // this._newCommentKeyDownHandler();
   }
 
   getTemplate() {
@@ -175,7 +174,6 @@ export default class Popup extends SmartView {
     this._setInnerHandlers();
     this.setCloseButtonClickHandler(this._callback.closeButtonClick);
     this.setAddedListClickHandler(this._callback.addedListPopupClick);
-    // this.setNewCommentKeyDowHandler(this._callback.newCommentKeyDown);
   }
 
   _setInnerHandlers() {
@@ -255,7 +253,6 @@ export default class Popup extends SmartView {
     const newComment = {
       text: '',
       emotion: '',
-      author: 'nobody',
       date: '',
     };
 

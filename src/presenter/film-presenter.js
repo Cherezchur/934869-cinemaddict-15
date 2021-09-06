@@ -1,4 +1,4 @@
-import { RenderPosition, render, remove, append, replace } from '../utils/render.js';
+import { RenderPosition, render, remove, replace } from '../utils/render.js';
 import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import { SUBMIT_KEY_CODE } from '../const.js';
@@ -42,15 +42,18 @@ export default class Film {
     this._popupComponent.setCloseButtonClickHandler(this._addCloseButtonHandler);
     this._popupComponent.setAddedListClickHandler(this._addListHandler);
 
-    if(prevFilmComponent === null || prevPopupComponent === null) {
+    if(prevFilmComponent === undefined) {
       render(this._filmListContainer, this._filmComponent, RenderPosition.BEFOREEND);
       return;
     }
 
     replace(this._filmComponent, prevFilmComponent);
+    remove(prevFilmComponent);
+
+    replace(this._filmComponent, prevFilmComponent);
 
     if (this._mode === Mode.POPUP_OPEN) {
-      append(this._popupComponent, this._pageBody);
+      this._popupComponent.updateElement(film);
     }
 
     remove(prevFilmComponent);
@@ -68,9 +71,10 @@ export default class Film {
   }
 
   _closePopup() {
+    document.removeEventListener('keydown', this._escKeyDownHandler);
+    document.removeEventListener('keydown', this._popupComponent._newCommentHandler);
     remove(this._popupComponent);
     this._pageBody.classList.remove('hide-overflow');
-    document.removeEventListener('keydown', this._escKeyDownHandler);
     this._mode = Mode.DEFAULT;
   }
 
@@ -83,7 +87,7 @@ export default class Film {
     this._changeMode();
     this._mode = Mode.POPUP_OPEN;
 
-    append(this._popupComponent, this._pageBody);
+    this._popupComponent = new PopupView(this._film);
     this._popupComponent.setNewCommentKeyDownHandler(this._addNewCommentHandler);
     this._popupComponent.setCloseButtonClickHandler(this._addCloseButtonHandler);
     this._popupComponent.setAddedListClickHandler(this._addListHandler);
@@ -120,21 +124,17 @@ export default class Film {
     commentData.newComment = {
       text: '',
       emotion: '',
-      author: 'nobody',
       date: '',
     };
-
-    const popupScrollLevel = window.scrollY;
-    window.scroll(0, popupScrollLevel);
   }
 
   _addNewCommentHandler(keyCode, commentData) {
+    if(SUBMIT_KEY_CODE.indexOf(keyCode) === -1) {
+      this._pressed.clear();
+      return;
+    }
 
     this._pressed.add(keyCode);
-
-    if(this._pressed.size > 2) {
-      this._pressed.clear();
-    }
 
     for (const code of SUBMIT_KEY_CODE) {
       if (!this._pressed.has(code)) {
@@ -155,36 +155,14 @@ export default class Film {
 
   _addListHandler(category) {
 
-    if(category === 'watchlist') {
-      this._changeData(
-        Object.assign(
-          {},
-          this._film,
-          {
-            watchlist: !this._film.watchlist,
-          },
-        ),
-      );
-    } else if(category === 'watched') {
-      this._changeData(
-        Object.assign(
-          {},
-          this._film,
-          {
-            watched: !this._film.watched,
-          },
-        ),
-      );
-    } else if(category === 'favorite') {
-      this._changeData(
-        Object.assign(
-          {},
-          this._film,
-          {
-            favorite: !this._film.favorite,
-          },
-        ),
-      );
-    }
+    this._changeData(
+      Object.assign(
+        {},
+        this._film,
+        {
+          [category]: !this._film[category],
+        },
+      ),
+    );
   }
 }
