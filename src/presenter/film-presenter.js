@@ -32,15 +32,11 @@ export default class Film {
     this._pageBody = document.body;
 
     const prevFilmComponent = this._filmComponent;
-    const prevPopupComponent = this._popupComponent;
 
     this._filmComponent = new FilmCardView(film);
-    this._popupComponent = new PopupView(film);
 
     this._filmComponent.setFilmCardClickHandler(this._openPopupHandler);
     this._filmComponent.setAddedListClickHandler(this._addListHandler);
-    this._popupComponent.setCloseButtonClickHandler(this._addCloseButtonHandler);
-    this._popupComponent.setAddedListClickHandler(this._addListHandler);
 
     if(prevFilmComponent === undefined) {
       render(this._filmListContainer, this._filmComponent, RenderPosition.BEFOREEND);
@@ -50,14 +46,9 @@ export default class Film {
     replace(this._filmComponent, prevFilmComponent);
     remove(prevFilmComponent);
 
-    replace(this._filmComponent, prevFilmComponent);
-
     if (this._mode === Mode.POPUP_OPEN) {
       this._popupComponent.updateElement(film);
     }
-
-    remove(prevFilmComponent);
-    remove(prevPopupComponent);
   }
 
   destroy() {
@@ -88,6 +79,8 @@ export default class Film {
     this._mode = Mode.POPUP_OPEN;
 
     this._popupComponent = new PopupView(this._film);
+
+    append(this._popupComponent, this._pageBody);
     this._popupComponent.setNewCommentKeyDownHandler(this._addNewCommentHandler);
     this._popupComponent.setCloseButtonClickHandler(this._addCloseButtonHandler);
     this._popupComponent.setAddedListClickHandler(this._addListHandler);
@@ -154,7 +147,6 @@ export default class Film {
   }
 
   _addListHandler(category) {
-
     this._changeData(
       Object.assign(
         {},
