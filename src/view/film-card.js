@@ -1,7 +1,7 @@
 import AbstractView from './abstract.js';
 
 const createFilmCardTemplate = (film) => {
-  const {movieName, rating, productionYear, duration, genres, poster, description, comments, watchlist, watched, favorite} = film;
+  const {movieName, rating, productionYear, duration, genres, poster, description, comments, watchlist, history, favorites} = film;
 
   const addActiveClassCard = (booleanValue) => booleanValue ? 'film-card__controls-item--active' : '';
 
@@ -25,8 +25,8 @@ const createFilmCardTemplate = (film) => {
             <a class="film-card__comments">${comments.length} comments</a>
             <div class="film-card__controls">
               <button class="film-card__controls-item film-card__controls-item--add-to-watchlist ${addActiveClassCard(watchlist)}" type="button" data-name="watchlist">Add to watchlist</button>
-              <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${addActiveClassCard(watched)}" type="button" data-name="watched">Mark as watched</button>
-              <button class="film-card__controls-item film-card__controls-item--favorite ${addActiveClassCard(favorite)}" type="button" data-name="favorite">Mark as favorite</button>
+              <button class="film-card__controls-item film-card__controls-item--mark-as-watched ${addActiveClassCard(history)}" type="button" data-name="history">Mark as watched</button>
+              <button class="film-card__controls-item film-card__controls-item--favorite ${addActiveClassCard(favorites)}" type="button" data-name="favorites">Mark as favorite</button>
             </div>
           </article>`;
 };

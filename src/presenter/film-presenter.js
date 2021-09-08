@@ -3,11 +3,7 @@ import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import { SUBMIT_KEY_CODE, UserAction, UpdateType } from '../const.js';
 import dayjs from 'dayjs';
-
-const Mode = {
-  DEFAULT: 'DEFAULT',
-  POPUP_OPEN: 'POPUP_OPEN',
-};
+import { Mode } from '../const.js';
 
 export default class Film {
   constructor(filmListContainer, changeData, changeMode) {
@@ -23,11 +19,13 @@ export default class Film {
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._openPopupHandler = this._openPopupHandler.bind(this);
     this._addNewCommentHandler = this._addNewCommentHandler.bind(this);
+    this._deleteCommentHandler = this._deleteCommentHandler.bind(this);
     this._addCloseButtonHandler = this._addCloseButtonHandler.bind(this);
     this._addListHandler = this._addListHandler.bind(this);
   }
 
   init(film) {
+    console.log('init');
     this._film = film;
     this._pageBody = document.body;
 
@@ -62,6 +60,7 @@ export default class Film {
   }
 
   _closePopup() {
+    console.log('close');
     document.removeEventListener('keydown', this._escKeyDownHandler);
     document.removeEventListener('keydown', this._popupComponent._newCommentHandler);
     remove(this._popupComponent);
@@ -70,6 +69,8 @@ export default class Film {
   }
 
   _openPopup() {
+
+    console.log('open');
 
     if(this._mode === Mode.POPUP_OPEN) {
       return;
@@ -83,10 +84,12 @@ export default class Film {
     this._popupComponent.setNewCommentKeyDownHandler(this._addNewCommentHandler);
     this._popupComponent.setCloseButtonClickHandler(this._addCloseButtonHandler);
     this._popupComponent.setAddedListClickHandler(this._addListHandler);
+    this._popupComponent.setDeleteCommentKeyDownHandler(this._deleteCommentHandler);
     this._popupComponent.restoreHandlers();
 
     this._pageBody.classList.add('hide-overflow');
     document.addEventListener('keydown', this._escKeyDownHandler);
+
   }
 
   _escKeyDownHandler(evt) {
@@ -108,7 +111,7 @@ export default class Film {
 
     this._changeData(
       UserAction.ADD_COMMENT,
-      UpdateType.MINOR,
+      UpdateType.PATCH,
       Object.assign(
         {},
         commentData,
@@ -121,9 +124,6 @@ export default class Film {
       author: 'nobody',
       date: '',
     };
-
-    const popupScrollLevel = window.scrollY;
-    window.scroll(0, popupScrollLevel);
   }
 
   _addNewCommentHandler(keyCode, commentData) {
@@ -148,15 +148,29 @@ export default class Film {
     this._addNewComment(commentData);
   }
 
+  _deleteCommentHandler(commentNumber, commentData) {
+    commentData.comments.splice(commentNumber, 1);
+
+    this._changeData(
+      UserAction.DELETE_COMMENT,
+      UpdateType.PATCH,
+      Object.assign(
+        {},
+        commentData,
+      ),
+    );
+  }
+
   _addCloseButtonHandler() {
     this._closePopup();
   }
 
   _addListHandler(category) {
-    UserAction.UPDATE_FILM_LIST,
-    UpdateType.MINOR,
 
     this._changeData(
+      UserAction.UPDATE_LIST,
+      UpdateType.MINOR,
+
       Object.assign(
         {},
         this._film,

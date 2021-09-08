@@ -1,30 +1,30 @@
 import { render, RenderPosition} from './utils/render.js';
 import ProfileTemplateView from './view/profile.js';
-import MenuView from './view/menu.js';
 import {generateFilm} from './mock/films.js';
-import {generateFilter} from './mock/filter.js';
 import FilmsListPresenter from './presenter/filmsList-presenter.js';
+import FilterPresenter from './presenter/filter-presenter.js';
 import FilmsModel from './model/films.js';
+import FilterModel from './model/filter.js';
 
-const FILMS_COUNT = 22;
+const FILMS_COUNT = 12;
 
 const films = new Array(FILMS_COUNT).fill().map(() => generateFilm());
-const filters = generateFilter(films);
 
 const filmsModel = new FilmsModel();
 filmsModel.setFilms(films);
 
+const filterModel = new FilterModel;
 const pageHeader = document.querySelector('.header');
 const pageMain = document.querySelector('.main');
 
 const profileComponent = new ProfileTemplateView();
-const menuComponent = new MenuView(filters);
 
 render(pageHeader, profileComponent, RenderPosition.BEFOREEND);
-render(pageMain, menuComponent, RenderPosition.BEFOREEND);
 
-const filmsListPresenter = new FilmsListPresenter(pageMain, filmsModel);
+const filmsListPresenter = new FilmsListPresenter(pageMain, filmsModel, filterModel);
+const filterPresenter = new FilterPresenter(pageMain, filterModel, filmsModel);
 
+filterPresenter.init();
 filmsListPresenter.init();
 
 const footerStatistics = document.querySelector('.footer__statistics');
