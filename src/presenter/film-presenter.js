@@ -1,4 +1,4 @@
-import { RenderPosition, render, remove, append, replace } from '../utils/render.js';
+import { RenderPosition, render, remove, replace } from '../utils/render.js';
 import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import { SUBMIT_KEY_CODE } from '../const.js';
@@ -79,6 +79,7 @@ export default class Film {
     this._mode = Mode.POPUP_OPEN;
 
     this._popupComponent = new PopupView(this._film);
+
     append(this._popupComponent, this._pageBody);
     this._popupComponent.setNewCommentKeyDownHandler(this._addNewCommentHandler);
     this._popupComponent.setCloseButtonClickHandler(this._addCloseButtonHandler);
@@ -116,12 +117,8 @@ export default class Film {
     commentData.newComment = {
       text: '',
       emotion: '',
-      author: 'nobody',
       date: '',
     };
-
-    const popupScrollLevel = window.scrollY;
-    window.scroll(0, popupScrollLevel);
   }
 
   _addNewCommentHandler(keyCode, commentData) {
