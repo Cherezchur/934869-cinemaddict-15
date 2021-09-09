@@ -31,7 +31,6 @@ export default class FilmsList {
     this._topFilmsComponent = new TopFilmsTemplateView();
     this._mostCommentedComponent = new MostCommentedTemplateView();
 
-    // this._handleFilmChange = this._handleFilmChange.bind(this);
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handlerSortTypeChange = this._handlerSortTypeChange.bind(this);
@@ -78,7 +77,6 @@ export default class FilmsList {
   }
 
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
 
     switch (actionType) {
       case UserAction.UPDATE_LIST:
@@ -95,27 +93,20 @@ export default class FilmsList {
 
   _handleModelEvent(updateType, data) {
 
-    const updateFilmId = this._filmPresenter.get(data.id);
-
-    console.log(updateFilmId);
+    const prevFilmPresenter = this._filmPresenter.get(data.id);
 
     switch (updateType) {
       case UpdateType.PATCH:
-        // Обновим карточку (удалить, добавить комеентарий)
         this._filmPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
+        this._clearFilmList();
+        this._renderFilmsSections();
 
-        // this._filmPresenter.get(data.id).init(data);
-
-        if(updateFilmId._mode === 'POPUP_OPEN') {
-          console.log('popup open');
-          this._clearFilmList();
-          this._renderFilmsSections();
-          updateFilmId.init(data);
-        } else {
-          this._clearFilmList();
-          this._renderFilmsSections();
+        if(prevFilmPresenter._mode === Mode.POPUP_OPEN) {
+          const popupScrollLevel = prevFilmPresenter.getPopupScrollLevel();
+          prevFilmPresenter._closePopup();
+          this._filmPresenter.get(data.id)._openPopup(popupScrollLevel);
         }
         break;
       case UpdateType.MAJOR:
@@ -128,10 +119,6 @@ export default class FilmsList {
   _handleModeChange() {
     this._filmPresenter.forEach((presenter) => presenter.resetView());
   }
-
-  // _handleFilmChange(updatedFilm) {
-  //   this._filmPresenter.get(updatedFilm.id).init(updatedFilm);
-  // }
 
   _renderFilm(filmElement, film) {
     const filmPresenter = new FilmPresenter(filmElement, this._handleViewAction, this._handleModeChange);

@@ -22,7 +22,6 @@ const createPopupTemplate = (data) => {
     let commentList = '';
 
     comments.forEach((element) => {
-      console.log();
       const commentItem = `<li class="film-details__comment">
                             <span class="film-details__comment-emoji">
                               <img src="./images/emoji/${element.emotion}.png" width="55" height="55" alt="emoji-${element.emotion}">
@@ -172,9 +171,17 @@ export default class Popup extends SmartView {
     return createPopupTemplate(this._data);
   }
 
+  getScrollLevel() {
+    return this.getElement().scrollTop;
+  }
+
+  addScroll(popupScrollLevel) {
+    this.getElement().scrollTop = popupScrollLevel;
+  }
+
   updateElement(newData) {
     this._data = Popup.parseFilmToData(newData);
-    const scrollLevel = this.getElement().scrollTop;
+    const scrollLevel = this.getScrollLevel();
     super.updateElement();
     this.getElement().scrollTop = scrollLevel;
   }

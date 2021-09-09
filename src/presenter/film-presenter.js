@@ -15,6 +15,7 @@ export default class Film {
     this._popupComponent = null;
     this._mode = Mode.DEFAULT;
     this._pressed = new Set();
+    this._popupScrollLevel = 0;
 
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._openPopupHandler = this._openPopupHandler.bind(this);
@@ -25,7 +26,6 @@ export default class Film {
   }
 
   init(film) {
-    console.log('init');
     this._film = film;
     this._pageBody = document.body;
 
@@ -60,7 +60,6 @@ export default class Film {
   }
 
   _closePopup() {
-    console.log('close');
     document.removeEventListener('keydown', this._escKeyDownHandler);
     document.removeEventListener('keydown', this._popupComponent._newCommentHandler);
     remove(this._popupComponent);
@@ -68,9 +67,12 @@ export default class Film {
     this._mode = Mode.DEFAULT;
   }
 
-  _openPopup() {
+  getPopupScrollLevel() {
+    this._popupScrollLevel = this._popupComponent.getScrollLevel();
+    return this._popupScrollLevel;
+  }
 
-    console.log('open');
+  _openPopup(scrollLevel) {
 
     if(this._mode === Mode.POPUP_OPEN) {
       return;
@@ -81,6 +83,7 @@ export default class Film {
 
     this._popupComponent = new PopupView(this._film);
     append(this._popupComponent, this._pageBody);
+    this._popupComponent.addScroll(scrollLevel);
     this._popupComponent.setNewCommentKeyDownHandler(this._addNewCommentHandler);
     this._popupComponent.setCloseButtonClickHandler(this._addCloseButtonHandler);
     this._popupComponent.setAddedListClickHandler(this._addListHandler);
@@ -89,7 +92,6 @@ export default class Film {
 
     this._pageBody.classList.add('hide-overflow');
     document.addEventListener('keydown', this._escKeyDownHandler);
-
   }
 
   _escKeyDownHandler(evt) {
