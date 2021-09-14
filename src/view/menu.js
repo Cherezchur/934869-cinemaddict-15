@@ -7,9 +7,6 @@ const createMenuTemplate = (filterLinks, activeFilter) => {
   const createFilterLinkTemplate = (filters) => {
     const {name, count} = filters;
 
-    console.log(activeFilter);
-    console.log(name);
-
     return (
       `<a href="#${name}" data-name="${name}" class="main-navigation__item ${getActiveClassFilter(name)}">${name.toUpperCase().slice(0, 1) + name.slice(1)} <span class="main-navigation__item-count">${count}</span></a>`
     );
