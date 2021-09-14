@@ -37,12 +37,6 @@ const getRelizeDate = () => {
   return dayjs(relizeDay).format('D MMMM YYYY');
 };
 
-const getDurationFilm = () => {
-  const isMoreHour = Boolean(getRandomInteger(0, 1));
-
-  return !isMoreHour ? `${getRandomInteger(1,59)}m` : `${getRandomInteger(1, 3)}h ${getRandomInteger(0,59)}m`;
-};
-
 const generateWritersList = () => {
   const WRITERS = [
     'Anne Wington',
@@ -75,6 +69,8 @@ const COUNTRY = [
 ];
 
 const generateGenres = () => {
+  const randomArrayGanres = new Array;
+
   const GENRES = [
     'Drama',
     'Film-Noir',
@@ -83,7 +79,11 @@ const generateGenres = () => {
     'Horor movie',
   ];
 
-  return GENRES.slice(0, getRandomInteger(1, GENRES.length - 1)).join(', ');
+  for(let count = 0; count <= getRandomInteger(1, 5); count++) {
+    randomArrayGanres.push(GENRES[getRandomInteger(0, 4)]);
+  }
+
+  return randomArrayGanres;
 };
 
 const generateDescription = () => {
@@ -142,7 +142,7 @@ const generateComments = () => {
 
   const commentsDate = () => {
     const maxDaysGap = 7;
-    const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
+    const daysGap = getRandomInteger(maxDaysGap, -maxDaysGap);
     const connentDay = dayjs().add(daysGap, 'day').toDate();
 
     return dayjs(connentDay).format('YYYY/MM/DD HH:mm');
@@ -158,6 +158,14 @@ const generateComments = () => {
   return commentsData();
 };
 
+const watchingDate = () => {
+  const maxDaysGap = 24;
+  const daysGap = getRandomInteger(0, -maxDaysGap);
+  const connentDay = dayjs().add(daysGap, 'month').toDate();
+
+  return dayjs(connentDay).format('YYYY/MM/DD HH:mm');
+};
+
 export const generateFilm = () => ({
   id: nanoid(),
   poster: generatePosters(),
@@ -169,7 +177,7 @@ export const generateFilm = () => ({
   actors: generateActorList(),
   relizeDate: getRelizeDate(),
   genres: generateGenres(),
-  duration: getDurationFilm(),
+  duration: getRandomInteger(0, 300),
   country: COUNTRY[getRandomInteger(0, COUNTRY.length - 1)],
   description: generateDescription(),
   comments: new Array(getRandomInteger(0, 5)).fill().map(() => generateComments()),
@@ -177,4 +185,5 @@ export const generateFilm = () => ({
   watchlist: Boolean(getRandomInteger(0, 1)),
   history: Boolean(getRandomInteger(0, 1)),
   favorites: Boolean(getRandomInteger(0, 1)),
+  watchingDate: watchingDate(),
 });

@@ -16,10 +16,10 @@ const createMenuTemplate = (filterLinks) => {
 
   return `<nav class="main-navigation">
             <div class="main-navigation__items">
-              <a href="#all" data-name="all" class="main-navigation__item">All movies</a>
+              <a href="#all" data-name="all" class="main-navigation__item main-navigation__item--active">All movies</a>
               ${filterLinksTemplate}
             </div>
-            <a href="#stats" class="main-navigation__additional">Stats</a>
+            <a href="#stats" data-name="stats" class="main-navigation__additional">Stats</a>
           </nav>`;
 };
 
@@ -27,6 +27,8 @@ export default class Menu extends AbstractView {
   constructor(filters) {
     super();
     this._filters = filters;
+    this._filtersLink = this.getElement().querySelectorAll('.main-navigation__item');
+    this._statsLink = this.getElement().querySelector('.main-navigation__additional');
 
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
@@ -35,14 +37,34 @@ export default class Menu extends AbstractView {
     return createMenuTemplate(this._filters);
   }
 
+  updateElement(evt) {
+    this.removeElement();
+    this._filtersLink.forEach((link) => {
+      link.className = 'main-navigation__item';
+    });
+
+    if(evt.target.className === 'main-navigation__additional') {
+      evt.target.classList.add('main-navigation__additional--active');
+    } else {
+      evt.target.classList.add('main-navigation__item--active');
+      this._statsLink.className = 'main-navigation__additional';
+    }
+
+    this.getElement();
+  }
+
   _filterTypeChangeHandler(evt) {
+    if(evt.target.tagName !== 'A') {
+      return;
+    }
     evt.preventDefault();
+    this.updateElement(evt);
     this._callback.filterTypeChange(evt.target.dataset.name);
   }
 
   setFilterTypeChangeHandler(callback) {
     this._callback.filterTypeChange = callback;
-    this.getElement().querySelector('.main-navigation__items').addEventListener('click', this._filterTypeChangeHandler);
+    this.getElement().addEventListener('click', this._filterTypeChangeHandler);
   }
 }
 

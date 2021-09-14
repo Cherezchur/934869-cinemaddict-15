@@ -1,4 +1,5 @@
 import AbstractView from './abstract.js';
+import { getDuration } from '../utils/film-utils.js';
 
 const createFilmCardTemplate = (film) => {
   const {movieName, rating, productionYear, duration, genres, poster, description, comments, watchlist, history, favorites} = film;
@@ -17,8 +18,8 @@ const createFilmCardTemplate = (film) => {
             <p class="film-card__rating">${rating}</p>
             <p class="film-card__info">
               <span class="film-card__year">${productionYear}</span>
-              <span class="film-card__duration">${duration}</span>
-              <span class="film-card__genre">${genres}</span>
+              <span class="film-card__duration">${getDuration(duration)}</span>
+              <span class="film-card__genre">${genres.join(', ')}</span>
             </p>
             <img src=".${poster}" alt="${movieName}" class="film-card__poster">
             <p class="film-card__description">${getDescription()}</p>

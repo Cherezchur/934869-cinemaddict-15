@@ -2,6 +2,8 @@ import MenuView from '../view/menu.js';
 import {render, RenderPosition, replace, remove} from '../utils/render.js';
 import {filter} from '../utils/filter.js';
 import {FilterType, UpdateType} from '../const.js';
+import { filmsListPresenter, pageMain } from '../main.js';
+import Statistics from '../view/statistics.js';
 
 export default class Filter {
   constructor(filterContainer, filterModel, filmsModel) {
@@ -13,17 +15,18 @@ export default class Filter {
 
     this._handleModelEvent = this._handleModelEvent.bind(this);
     this._handleFilterTypeChange = this._handleFilterTypeChange.bind(this);
-
-    this._filmsModel.addObserver(this._handleModelEvent);
-    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {
     const filters = this._getFilters();
     const prevFilterComponent = this._filterComponent;
 
+    this._filmsListPresenter = filmsListPresenter;
     this._filterComponent = new MenuView(filters);
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
+
+    this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
 
     if (prevFilterComponent === null) {
       render(this._filterContainer, this._filterComponent, RenderPosition.BEFOREEND);
@@ -39,8 +42,23 @@ export default class Filter {
   }
 
   _handleFilterTypeChange(filterType) {
+
     if (this._filterModel.getFilter() === filterType) {
       return;
+    }
+
+    if(filterType === 'stats') {
+      this._filmsListPresenter.destroy();
+      this._statistics = new Statistics(this._filmsModel.getFilms());
+      render(pageMain, this._statistics, RenderPosition.BEFOREEND);
+      this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+      return;
+    }
+
+    if (document.querySelector('.films') === null) {
+      remove(this._statistics);
+      this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+      this._filmsListPresenter.init();
     }
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);

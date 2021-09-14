@@ -1,5 +1,7 @@
 import SmartView from './smart.js';
 import he from 'he';
+import { getDuration } from '../utils/film-utils.js';
+
 
 const createPopupTemplate = (data) => {
   const {movieName, rating, duration, genres, poster,
@@ -8,13 +10,13 @@ const createPopupTemplate = (data) => {
     relizeDate, country} = data;
 
   const generateGenresSection = () => {
-    let genresList = '';
+    const genresList = new Array;
 
-    genres.split(', ').forEach((element) => {
+    genres.forEach((element) => {
       const ganreItem = `<span class"film-details__genre">${element}</span>`;
-      genresList += ` ${ganreItem}`;
+      genresList.push(ganreItem);
     });
-    return genresList;
+    return genresList.join(', ');
   };
 
   const addActiveClassFilm = (booleanValue) => booleanValue ? 'film-details__control-button--active' : '';
@@ -86,14 +88,14 @@ const createPopupTemplate = (data) => {
                       </tr>
                       <tr class="film-details__row">
                         <td class="film-details__term">Runtime</td>
-                        <td class="film-details__cell">${duration}</td>
+                        <td class="film-details__cell">${getDuration(duration)}</td>
                       </tr>
                       <tr class="film-details__row">
                         <td class="film-details__term">Country</td>
                         <td class="film-details__cell">${country}</td>
                       </tr>
                       <tr class="film-details__row">
-                        <td class="film-details__term">Genr${genres.split(', ').length > 1 ? 'es' : 'e'}</td>
+                        <td class="film-details__term">Genr${genres.length > 1 ? 'es' : 'e'}</td>
                         <td class="film-details__cell">${generateGenresSection()}</td>
                       </tr>
                     </table>

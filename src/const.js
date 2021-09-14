@@ -11,9 +11,9 @@ export const UserAction = {
 };
 
 export const UpdateType = {
-  PATCH: 'PATCH', // - обновить карточку фильма
-  MINOR: 'MINOR', // - обновить карточку фильма + фильтры
-  MAJOR: 'MAJOR', // - обновить карточку фильма + фильтры + звание пользователя
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR',
 };
 
 export const FilterType = {
@@ -26,6 +26,11 @@ export const FilterType = {
 export const Mode = {
   DEFAULT: 'DEFAULT',
   POPUP_OPEN: 'POPUP_OPEN',
+};
+
+export const MenuItem = {
+  FILMS: 'FILMS',
+  STATISTICS: 'STATISTICS',
 };
 
 export const SUBMIT_KEY_CODE = ['Control', 'Enter'];
