@@ -47,19 +47,19 @@ export default class Filter {
       return;
     }
 
-    if(filterType === 'stats') {
-      this._filmsListPresenter.destroy();
-      this._statistics = new Statistics(this._filmsModel.getFilms());
-      render(pageMain, this._statistics, RenderPosition.BEFOREEND);
-      this._filterModel.setFilter(UpdateType.MAJOR, filterType);
-      return;
-    }
+    // if(filterType === 'stats') {
+    //   this._filmsListPresenter.destroy();
+    //   this._statistics = new Statistics(this._filmsModel.getFilms());
+    //   render(pageMain, this._statistics, RenderPosition.BEFOREEND);
+    //   // this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+    //   return;
+    // }
 
-    if (document.querySelector('.films') === null) {
-      remove(this._statistics);
-      this._filterModel.setFilter(UpdateType.MAJOR, filterType);
-      this._filmsListPresenter.init();
-    }
+    // if (document.querySelector('.films') === null) {
+    //   remove(this._statistics);
+    //   this._filterModel.setFilter(UpdateType.MAJOR, filterType);
+    //   this._filmsListPresenter.init();
+    // }
 
     this._filterModel.setFilter(UpdateType.MAJOR, filterType);
   }
