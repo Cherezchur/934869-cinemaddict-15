@@ -1,14 +1,20 @@
 import AbstractView from './abstract.js';
 
-const createFilterLinkTemplate = (filters) => {
-  const {name, count} = filters;
+const createMenuTemplate = (filterLinks, activeFilter) => {
 
-  return (
-    `<a href="#${name}" data-name="${name}" class="main-navigation__item">${name.toUpperCase().slice(0, 1) + name.slice(1)} <span class="main-navigation__item-count">${count}</span></a>`
-  );
-};
+  const getActiveClassFilter = (filterName) => activeFilter === filterName ? 'main-navigation__item--active' : '';
 
-const createMenuTemplate = (filterLinks) => {
+  const createFilterLinkTemplate = (filters) => {
+    const {name, count} = filters;
+
+    console.log(activeFilter);
+    console.log(name);
+
+    return (
+      `<a href="#${name}" data-name="${name}" class="main-navigation__item ${getActiveClassFilter(name)}">${name.toUpperCase().slice(0, 1) + name.slice(1)} <span class="main-navigation__item-count">${count}</span></a>`
+    );
+  };
+
   const filterLinksTemplate = filterLinks
     .slice(1)
     .map((filter, index) => createFilterLinkTemplate(filter, index === 0))
@@ -16,41 +22,24 @@ const createMenuTemplate = (filterLinks) => {
 
   return `<nav class="main-navigation">
             <div class="main-navigation__items">
-              <a href="#all" data-name="all" class="main-navigation__item main-navigation__item--active">All movies</a>
+              <a href="#all" data-name="all" class="main-navigation__item ${getActiveClassFilter('all')}">All movies</a>
               ${filterLinksTemplate}
             </div>
-            <a href="#stats" data-name="stats" class="main-navigation__additional">Stats</a>
+            <a href="#stats" data-name="stats" class="main-navigation__additional ${activeFilter === 'stats' ? 'main-navigation__additional--active' : ''}">Stats</a>
           </nav>`;
 };
 
 export default class Menu extends AbstractView {
-  constructor(filters) {
+  constructor(filters, activeFilter) {
     super();
     this._filters = filters;
-    this._filtersLink = this.getElement().querySelectorAll('.main-navigation__item');
-    this._statsLink = this.getElement().querySelector('.main-navigation__additional');
+    this._activeFilter = activeFilter;
 
     this._filterTypeChangeHandler = this._filterTypeChangeHandler.bind(this);
   }
 
   getTemplate() {
-    return createMenuTemplate(this._filters);
-  }
-
-  updateElement(evt) {
-    this.removeElement();
-    this._filtersLink.forEach((link) => {
-      link.className = 'main-navigation__item';
-    });
-
-    if(evt.target.className === 'main-navigation__additional') {
-      evt.target.classList.add('main-navigation__additional--active');
-    } else {
-      evt.target.classList.add('main-navigation__item--active');
-      this._statsLink.className = 'main-navigation__additional';
-    }
-
-    this.getElement();
+    return createMenuTemplate(this._filters, this._activeFilter);
   }
 
   _filterTypeChangeHandler(evt) {
@@ -58,7 +47,7 @@ export default class Menu extends AbstractView {
       return;
     }
     evt.preventDefault();
-    this.updateElement(evt);
+
     this._callback.filterTypeChange(evt.target.dataset.name);
   }
 
