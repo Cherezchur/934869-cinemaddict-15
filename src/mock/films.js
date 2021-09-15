@@ -175,6 +175,6 @@ export const generateFilm = () => ({
   comments: new Array(getRandomInteger(0, 5)).fill().map(() => generateComments()),
   ageRating: AGE_RATING[getRandomInteger(0, AGE_RATING.length - 1)],
   watchlist: Boolean(getRandomInteger(0, 1)),
-  watched: Boolean(getRandomInteger(0, 1)),
-  favorite: Boolean(getRandomInteger(0, 1)),
+  history: Boolean(getRandomInteger(0, 1)),
+  favorites: Boolean(getRandomInteger(0, 1)),
 });

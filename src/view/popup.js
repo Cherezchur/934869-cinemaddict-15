@@ -1,9 +1,10 @@
 import SmartView from './smart.js';
+import he from 'he';
 
 const createPopupTemplate = (data) => {
   const {movieName, rating, duration, genres, poster,
-    description, comments, watchlist, watched,
-    favorite, ageRating, director, writers, actors,
+    description, comments, watchlist, history,
+    favorites, ageRating, director, writers, actors,
     relizeDate, country} = data;
 
   const generateGenresSection = () => {
@@ -27,11 +28,11 @@ const createPopupTemplate = (data) => {
                               <img src="./images/emoji/${element.emotion}.png" width="55" height="55" alt="emoji-${element.emotion}">
                             </span>
                             <div>
-                              <p class="film-details__comment-text">${element.text}</p>
+                              <p class="film-details__comment-text">${he.encode(element.text)}</p>
                               <p class="film-details__comment-info">
                                 <span class="film-details__comment-author">${element.author}</span>
                                 <span class="film-details__comment-day">${element.date}</span>
-                                <button class="film-details__comment-delete">Delete</button>
+                                <button class="film-details__comment-delete" data-number="${comments.indexOf(element)}">Delete</button>
                               </p>
                             </div>
                           </li>`;
@@ -105,8 +106,8 @@ const createPopupTemplate = (data) => {
 
                 <section class="film-details__controls">
                   <button type="button" class="film-details__control-button film-details__control-button--watchlist ${addActiveClassFilm(watchlist)}" id="watchlist" name="watchlist">Add to watchlist</button>
-                  <button type="button" class="film-details__control-button film-details__control-button--watched ${addActiveClassFilm(watched)}" id="watched" name="watched">Already watched</button>
-                  <button type="button" class="film-details__control-button film-details__control-button--favorite ${addActiveClassFilm(favorite)}" id="favorite" name="favorite">Add to favorites</button>
+                  <button type="button" class="film-details__control-button film-details__control-button--watched ${addActiveClassFilm(history)}" id="history" name="watched">Already watched</button>
+                  <button type="button" class="film-details__control-button film-details__control-button--favorite ${addActiveClassFilm(favorites)}" id="favorites" name="favorite">Add to favorites</button>
                 </section>
               </div>
 
@@ -163,6 +164,7 @@ export default class Popup extends SmartView {
     this._addEmojiClickHandler = this._addEmojiClickHandler.bind(this);
     this._descriptionTextareaHandler = this._descriptionTextareaHandler.bind(this);
     this._newCommentHandler = this._newCommentHandler.bind(this);
+    this._deleteCommentHandler = this._deleteCommentHandler.bind(this);
     this._setInnerHandlers();
   }
 
@@ -170,9 +172,17 @@ export default class Popup extends SmartView {
     return createPopupTemplate(this._data);
   }
 
+  getScrollLevel() {
+    return this.getElement().scrollTop;
+  }
+
+  addScroll(popupScrollLevel) {
+    this.getElement().scrollTop = popupScrollLevel;
+  }
+
   updateElement(newData) {
     this._data = Popup.parseFilmToData(newData);
-    const scrollLevel = this.getElement().scrollTop;
+    const scrollLevel = this.getScrollLevel();
     super.updateElement();
     this.getElement().scrollTop = scrollLevel;
   }
@@ -181,6 +191,7 @@ export default class Popup extends SmartView {
     this._setInnerHandlers();
     this.setCloseButtonClickHandler(this._callback.closeButtonClick);
     this.setAddedListClickHandler(this._callback.addedListPopupClick);
+    this.setDeleteCommentKeyDownHandler(this._callback.deleteCommentClick);
   }
 
   _setInnerHandlers() {
@@ -244,9 +255,25 @@ export default class Popup extends SmartView {
     this._callback.newCommentKeyDown(keyCode, this._data);
   }
 
+  _deleteCommentHandler(evt) {
+    evt.preventDefault();
+    if(evt.target.tagName !== 'BUTTON') {
+      return;
+    }
+    const commentNumber = evt.target.dataset.number;
+    this._callback.deleteCommentClick(commentNumber, this._data);
+  }
+
   setNewCommentKeyDownHandler(callback) {
     this._callback.newCommentKeyDown = callback;
     document.addEventListener('keydown', this._newCommentHandler);
+  }
+
+  setDeleteCommentKeyDownHandler(callback) {
+    this._callback.deleteCommentClick = callback;
+    if(this._data.comments.length > 0) {
+      this.getElement().querySelector('.film-details__comments-list').addEventListener('click', this._deleteCommentHandler);
+    }
   }
 
   setCloseButtonClickHandler(callback) {
