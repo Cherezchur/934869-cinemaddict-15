@@ -1,3 +1,4 @@
+
 // import { render, RenderPosition} from './utils/render.js';
 import {generateFilm} from './mock/films.js';
 import FilmsListPresenter from './presenter/filmsList-presenter.js';

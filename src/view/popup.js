@@ -2,7 +2,6 @@ import SmartView from './smart.js';
 import he from 'he';
 import { getDuration } from '../utils/film-utils.js';
 
-
 const createPopupTemplate = (data) => {
   const {movieName, rating, duration, genres, poster,
     description, comments, watchlist, history,

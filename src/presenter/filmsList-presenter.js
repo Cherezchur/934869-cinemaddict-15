@@ -25,6 +25,7 @@ export default class FilmsList {
     this._currentSortType = SortType.DEFAULT;
 
     this._sitefilmsSection = new filmsSectionTemplateView();
+    this._sortListComponent = new SortListTemplateView();
     this._sortSectionComponent = new SortSectionTemplateView();
     this._showMoreButtonComponent = new ShowMoreButtonTemplateView();
     this._topFilmsComponent = new TopFilmsTemplateView();
@@ -39,6 +40,9 @@ export default class FilmsList {
     this._sortFilmsContainer = this._sortSectionComponent.getElement().querySelector('.films-list__container');
     this._topFilmsContainer = this._topFilmsComponent.getElement().querySelector('.top-rated__container');
     this._mostCommentedFilmsContainer = this._mostCommentedComponent.getElement().querySelector('.most-commented__container');
+
+    this._filmsModel.addObserver(this._handleModelEvent);
+    this._filterModel.addObserver(this._handleModelEvent);
   }
 
   init() {

@@ -1,4 +1,4 @@
-import { RenderPosition, render, remove, replace } from '../utils/render.js';
+import { RenderPosition, render, remove, replace, append} from '../utils/render.js';
 import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import { SUBMIT_KEY_CODE, UserAction, UpdateType } from '../const.js';
