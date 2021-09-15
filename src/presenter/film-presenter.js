@@ -1,4 +1,4 @@
-import { RenderPosition, render, remove, append, replace } from '../utils/render.js';
+import { RenderPosition, render, remove, replace } from '../utils/render.js';
 import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import { SUBMIT_KEY_CODE, UserAction, UpdateType } from '../const.js';
@@ -123,13 +123,11 @@ export default class Film {
     commentData.newComment = {
       text: '',
       emotion: '',
-      author: 'nobody',
       date: '',
     };
   }
 
   _addNewCommentHandler(keyCode, commentData) {
-
     if(SUBMIT_KEY_CODE.indexOf(keyCode) === -1) {
       this._pressed.clear();
       return;
