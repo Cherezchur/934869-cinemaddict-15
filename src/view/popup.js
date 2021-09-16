@@ -1,12 +1,13 @@
 import SmartView from './smart.js';
 import he from 'he';
 import { getDuration } from '../utils/film-utils.js';
+import dayjs from 'dayjs';
 
 const createPopupTemplate = (data) => {
-  const {movieName, rating, duration, genres, poster,
+  const {movieName, originalName, rating, duration, genres, poster,
     description, comments, watchlist, history,
     favorites, ageRating, director, writers, actors,
-    relizeDate, country} = data;
+    relizeDate, country, noComments} = data;
 
   const generateGenresSection = () => {
     const genresList = new Array;
@@ -21,6 +22,12 @@ const createPopupTemplate = (data) => {
   const addActiveClassFilm = (booleanValue) => booleanValue ? 'film-details__control-button--active' : '';
 
   const generateCommentItem = () => {
+    if(noComments) {
+      return `<li class="film-details__comment">
+                <p class="film-details__comment-text">Не удалось загрузить комментарии</p>
+              </li>`;
+    }
+
     let commentList = '';
 
     comments.forEach((element) => {
@@ -29,14 +36,14 @@ const createPopupTemplate = (data) => {
                               <img src="./images/emoji/${element.emotion}.png" width="55" height="55" alt="emoji-${element.emotion}">
                             </span>
                             <div>
-                              <p class="film-details__comment-text">${he.encode(element.text)}</p>
+                              <p class="film-details__comment-text">${he.encode(element.comment)}</p>
                               <p class="film-details__comment-info">
                                 <span class="film-details__comment-author">${element.author}</span>
-                                <span class="film-details__comment-day">${element.date}</span>
+                                <span class="film-details__comment-day">${dayjs(element.date).format('YYYY/MM/DD HH/mm')}</span>
                                 <button class="film-details__comment-delete" data-number="${comments.indexOf(element)}">Delete</button>
                               </p>
                             </div>
-                          </li>`;
+                          </li>` ;
       commentList += ` ${commentItem}`;
     });
 
@@ -51,7 +58,7 @@ const createPopupTemplate = (data) => {
                 </div>
                 <div class="film-details__info-wrap">
                   <div class="film-details__poster">
-                    <img class="film-details__poster-img" src=".${poster}" alt="${movieName}">
+                    <img class="film-details__poster-img" src="${poster}" alt="${movieName}">
 
                     <p class="film-details__age">${ageRating}</p>
                   </div>
@@ -60,7 +67,7 @@ const createPopupTemplate = (data) => {
                     <div class="film-details__info-head">
                       <div class="film-details__title-wrap">
                         <h3 class="film-details__title">${movieName}</h3>
-                        <p class="film-details__title-original">Original: ${movieName}</p>
+                        <p class="film-details__title-original">Original: ${originalName}</p>
                       </div>
 
                       <div class="film-details__rating">
@@ -241,15 +248,15 @@ export default class Popup extends SmartView {
     this._callback.addedListPopupClick(category);
   }
 
-  _alreadyWatchedPopupClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.alreadyWatchedPopupClick();
-  }
+  // _alreadyWatchedPopupClickHandler(evt) {
+  //   evt.preventDefault();
+  //   this._callback.alreadyWatchedPopupClick();
+  // }
 
-  _addedFavoritesPopupClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.addedFavoritesPopupClick();
-  }
+  // _addedFavoritesPopupClickHandler(evt) {
+  //   evt.preventDefault();
+  //   this._callback.addedFavoritesPopupClick();
+  // }
 
   _newCommentHandler(evt) {
     const keyCode = evt.key;

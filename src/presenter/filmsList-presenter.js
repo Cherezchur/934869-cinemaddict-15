@@ -6,6 +6,7 @@ import TopFilmsTemplateView from '../view/top-films.js';
 import MostCommentedTemplateView from '../view/most-commented-films.js';
 import ShowMoreButtonTemplateView from '../view/show-more-button.js';
 import listEmptyView from '../view/list-empty.js';
+import LoadingView from '../view/loading.js';
 import FilmPresenter from './film-presenter.js';
 import { SortType, UpdateType, UserAction } from '../const.js';
 import { sortDateDown, sortRatingDown } from '../utils/film-utils.js';
@@ -16,13 +17,16 @@ const FILM_COUNT_PER_STEP = 5;
 // const EXTRA_FILMS_COUNT = 2;
 
 export default class FilmsList {
-  constructor(movieListContainer, filmsModel, filterModel) {
+  constructor(movieListContainer, filmsModel, filterModel, api) {
+    this._api = api;
     this._filmsModel = filmsModel;
     this._filterModel = filterModel;
     this._movieListContainer = movieListContainer;
     this._renderedFilmCount = FILM_COUNT_PER_STEP;
     this._filmPresenter = new Map();
     this._currentSortType = SortType.DEFAULT;
+    this._isLoading = true;
+    this._prevFilmPresenter = new Map;
 
     this._sitefilmsSection = new filmsSectionTemplateView();
     this._sortListComponent = new SortListTemplateView();
@@ -30,6 +34,7 @@ export default class FilmsList {
     this._showMoreButtonComponent = new ShowMoreButtonTemplateView();
     this._topFilmsComponent = new TopFilmsTemplateView();
     this._mostCommentedComponent = new MostCommentedTemplateView();
+    this._loadingComponent = new LoadingView();
 
     this._handleShowMoreButtonClick = this._handleShowMoreButtonClick.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
@@ -83,7 +88,9 @@ export default class FilmsList {
 
     switch (actionType) {
       case UserAction.UPDATE_LIST:
-        this._filmsModel.updateFilm(updateType, update);
+        this._api.updateFilm(update).then((response) => {
+          this._filmsModel.updateFilm(updateType, response);
+        });
         break;
       case UserAction.ADD_COMMENT:
         this._filmsModel.updateFilm(updateType, update);
@@ -96,24 +103,28 @@ export default class FilmsList {
 
   _handleModelEvent(updateType, data) {
 
-    const prevFilmPresenter = this._filmPresenter.get(data.id);
 
     switch (updateType) {
       case UpdateType.PATCH:
         this._filmPresenter.get(data.id).init(data);
         break;
       case UpdateType.MINOR:
+        this._prevFilmPresenter = this._filmPresenter.get(data.id);
         this._clearFilmList();
         this._renderFilmsSections();
-
-        if(prevFilmPresenter._mode === Mode.POPUP_OPEN) {
-          const popupScrollLevel = prevFilmPresenter.getPopupScrollLevel();
-          prevFilmPresenter._closePopup();
+        if(this._prevFilmPresenter._mode === Mode.POPUP_OPEN) {
+          const popupScrollLevel = this._prevFilmPresenter.getPopupScrollLevel();
+          this._prevFilmPresenter._closePopup();
           this._filmPresenter.get(data.id)._openPopup(popupScrollLevel);
         }
         break;
       case UpdateType.MAJOR:
         this._clearFilmList({resetRenderedFilmCount: true, resetSortType: true});
+        this._renderFilmsSections();
+        break;
+      case UpdateType.INIT:
+        this._isLoading = false;
+        remove(this._loadingComponent);
         this._renderFilmsSections();
         break;
     }
@@ -131,6 +142,10 @@ export default class FilmsList {
 
   _renderFilms(films) {
     films.forEach((film) => this._renderFilm(this._sortFilmsContainer, film));
+  }
+
+  _renderLoading() {
+    render(this._sitefilmsSection, this._loadingComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderNoFilms() {
@@ -175,6 +190,11 @@ export default class FilmsList {
   }
 
   _renderSortSection() {
+    if (this._getFilms().length === 0) {
+      this._renderNoFilms();
+      return;
+    }
+
     this._renderSortComponent();
     render(this._sitefilmsSection, this._sortSectionComponent, RenderPosition.BEFOREEND);
 
@@ -226,8 +246,9 @@ export default class FilmsList {
   }
 
   _renderFilmsSections() {
-    if (this._getFilms().length === 0) {
-      this._renderNoFilms();
+
+    if (this._isLoading) {
+      this._renderLoading();
       return;
     }
 

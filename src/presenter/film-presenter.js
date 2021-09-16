@@ -4,6 +4,7 @@ import PopupView from '../view/popup.js';
 import { SUBMIT_KEY_CODE, UserAction, UpdateType } from '../const.js';
 import dayjs from 'dayjs';
 import { Mode } from '../const.js';
+import { api } from '../main.js';
 
 export default class Film {
   constructor(filmListContainer, changeData, changeMode) {
@@ -78,20 +79,39 @@ export default class Film {
       return;
     }
 
-    this._changeMode();
-    this._mode = Mode.POPUP_OPEN;
+    api.getComments(this._film.id)
+      .then((comments) => { this._film = Object.assign(
+        {},
+        this._film,
+        {
+          comments,
+          noComments: false,
+        });
+      })
+      .then(() => {
+        this._popupComponent = new PopupView(this._film);
+        this._changeMode();
+        this._mode = Mode.POPUP_OPEN;
+        append(this._popupComponent, this._pageBody);
 
-    this._popupComponent = new PopupView(this._film);
-    append(this._popupComponent, this._pageBody);
-    this._popupComponent.addScroll(scrollLevel);
-    this._popupComponent.setNewCommentKeyDownHandler(this._addNewCommentHandler);
-    this._popupComponent.setCloseButtonClickHandler(this._addCloseButtonHandler);
-    this._popupComponent.setAddedListClickHandler(this._addListHandler);
-    this._popupComponent.setDeleteCommentKeyDownHandler(this._deleteCommentHandler);
-    this._popupComponent.restoreHandlers();
+        this._popupComponent.addScroll(scrollLevel);
+        this._popupComponent.setNewCommentKeyDownHandler(this._addNewCommentHandler);
+        this._popupComponent.setCloseButtonClickHandler(this._addCloseButtonHandler);
+        this._popupComponent.setAddedListClickHandler(this._addListHandler);
+        this._popupComponent.setDeleteCommentKeyDownHandler(this._deleteCommentHandler);
+        this._popupComponent.restoreHandlers();
 
-    this._pageBody.classList.add('hide-overflow');
-    document.addEventListener('keydown', this._escKeyDownHandler);
+        this._pageBody.classList.add('hide-overflow');
+        document.addEventListener('keydown', this._escKeyDownHandler);
+      })
+      .catch(() => {
+        this._film = Object.assign(
+          {},
+          this._film,
+          {
+            noComments: true,
+          });
+      });
   }
 
   _escKeyDownHandler(evt) {
