@@ -40,7 +40,7 @@ const createPopupTemplate = (data) => {
                               <p class="film-details__comment-info">
                                 <span class="film-details__comment-author">${element.author}</span>
                                 <span class="film-details__comment-day">${dayjs(element.date).format('YYYY/MM/DD HH/mm')}</span>
-                                <button class="film-details__comment-delete" data-number="${comments.indexOf(element)}">Delete</button>
+                                <button class="film-details__comment-delete" data-id="${element.id}">Delete</button>
                               </p>
                             </div>
                           </li>` ;
@@ -213,7 +213,7 @@ export default class Popup extends SmartView {
 
   _descriptionTextareaHandler(evt) {
     evt.preventDefault();
-    this._data.newComment.text = evt.target.value;
+    this._data.newComment.comment = evt.target.value;
 
     this.updateData({
       commentText: evt.target.value,
@@ -248,16 +248,6 @@ export default class Popup extends SmartView {
     this._callback.addedListPopupClick(category);
   }
 
-  // _alreadyWatchedPopupClickHandler(evt) {
-  //   evt.preventDefault();
-  //   this._callback.alreadyWatchedPopupClick();
-  // }
-
-  // _addedFavoritesPopupClickHandler(evt) {
-  //   evt.preventDefault();
-  //   this._callback.addedFavoritesPopupClick();
-  // }
-
   _newCommentHandler(evt) {
     const keyCode = evt.key;
     this._callback.newCommentKeyDown(keyCode, this._data);
@@ -268,7 +258,7 @@ export default class Popup extends SmartView {
     if(evt.target.tagName !== 'BUTTON') {
       return;
     }
-    const commentNumber = evt.target.dataset.number;
+    const commentNumber = evt.target.dataset.id;
     this._callback.deleteCommentClick(commentNumber, this._data);
   }
 
@@ -297,9 +287,8 @@ export default class Popup extends SmartView {
   static parseFilmToData(film) {
 
     const newComment = {
-      text: '',
+      comment: '',
       emotion: '',
-      date: '',
     };
 
     return Object.assign(

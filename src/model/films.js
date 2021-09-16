@@ -18,6 +18,8 @@ export default class Films extends AbstractObserver {
   }
 
   updateFilm(updateType, update) {
+    console.log(update);
+
     const index = this._films.findIndex((film) => film.id === update.id);
 
     if (index === -1) {
@@ -35,7 +37,43 @@ export default class Films extends AbstractObserver {
 
   static adaptToClient(film) {
 
-    const adaptedFilm = Object.assign(
+    let adaptedFilm = new Object;
+
+    if(film.movie) {
+      adaptedFilm = Object.assign(
+        {},
+        film,
+        {
+          id: film.movie.id,
+          actors: film.movie['film_info'].actors.join(', '),
+          ageRating: `${film.movie['film_info']['age_rating']}+`,
+          country: film.movie['film_info'].release['release_country'],
+          description: film.movie['film_info'].description,
+          director: film.movie['film_info'].director,
+          duration: film.movie['film_info'].runtime,
+          genres: film.movie['film_info'].genre,
+          movieName: film.movie['film_info'].title,
+          originalName: film.movie['film_info']['alternative_title'],
+          poster: film.movie['film_info'].poster,
+          productionYear: dayjs(film.movie['film_info'].release.date).format('YYYY'),
+          rating: film.movie['film_info']['total_rating'],
+          relizeDate: dayjs(film.movie['film_info'].release.date).format('D MMMM YYYY'),
+          writers: film.movie['film_info'].writers.join(', '),
+          watchlist: film.movie['user_details'].watchlist,
+          history: film.movie['user_details']['already_watched'],
+          favorites: film.movie['user_details'].favorite,
+          watchingDate: dayjs(film.movie['user_details']['watching_date']).format('YYYY/MM/DD HH:mm'),
+          serverFormatDate: film.movie['user_details']['watching_date'],
+          serverRelizeDateFormat: film.movie['film_info'].release.date,
+        },
+      );
+
+      delete adaptedFilm.movie;
+
+      return adaptedFilm;
+    }
+
+    adaptedFilm = Object.assign(
       {},
       film,
       {
@@ -99,6 +137,11 @@ export default class Films extends AbstractObserver {
     };
 
     const getCommentsId = () => {
+
+      if(film.comments.length === 0) {
+        return [];
+      }
+
       const commentsId = new Array;
 
       if(film.comments[0].id) {

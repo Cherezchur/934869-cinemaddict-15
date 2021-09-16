@@ -2,7 +2,6 @@ import { RenderPosition, render, remove, replace, append} from '../utils/render.
 import FilmCardView from '../view/film-card.js';
 import PopupView from '../view/popup.js';
 import { SUBMIT_KEY_CODE, UserAction, UpdateType } from '../const.js';
-import dayjs from 'dayjs';
 import { Mode } from '../const.js';
 import { api } from '../main.js';
 
@@ -128,7 +127,7 @@ export default class Film {
   }
 
   _addNewComment(commentData) {
-    commentData.newComment.date = dayjs().format('YYYY/MM/DD HH:mm');
+    // commentData.newComment.date = dayjs().format('YYYY/MM/DD HH:mm');
     commentData.comments.push(commentData.newComment);
 
     this._changeData(
@@ -136,14 +135,16 @@ export default class Film {
       UpdateType.PATCH,
       Object.assign(
         {},
-        commentData,
+        commentData.newComment,
+        {
+          id: commentData.id,
+        },
       ),
     );
 
     commentData.newComment = {
       text: '',
       emotion: '',
-      date: '',
     };
   }
 
@@ -168,8 +169,7 @@ export default class Film {
     this._addNewComment(commentData);
   }
 
-  _deleteCommentHandler(commentNumber, commentData) {
-    commentData.comments.splice(commentNumber, 1);
+  _deleteCommentHandler(commentId, commentData) {
 
     this._changeData(
       UserAction.DELETE_COMMENT,
@@ -177,6 +177,9 @@ export default class Film {
       Object.assign(
         {},
         commentData,
+        {
+          commentId: commentId,
+        },
       ),
     );
   }

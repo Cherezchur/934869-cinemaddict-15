@@ -93,10 +93,14 @@ export default class FilmsList {
         });
         break;
       case UserAction.ADD_COMMENT:
-        this._filmsModel.updateFilm(updateType, update);
+        this._api.addComment(update).then((response) => {
+          this._filmsModel.updateFilm(updateType, response);
+        });
         break;
       case UserAction.DELETE_COMMENT:
-        this._filmsModel.updateFilm(updateType, update);
+        this._api.deleteComment(update).then(() => {
+          this._filmsModel.updateFilm(updateType, update);
+        });
         break;
     }
   }
