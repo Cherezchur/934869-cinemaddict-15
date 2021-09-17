@@ -18,7 +18,7 @@ export default class Smart extends Abstract {
       return;
     }
 
-    this.updateElement();
+    this.updateElement(this._data);
   }
 
   updateElement() {

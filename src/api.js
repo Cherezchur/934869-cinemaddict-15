@@ -1,4 +1,4 @@
-import Films from './model/films.js';
+
 import FilmsModel from './model/films.js';
 
 const Method = {
@@ -46,7 +46,7 @@ export default class Api {
     delete comment.id;
 
     return this._load({
-      url: `comments/${filmId}`,
+      url: `comments/${filmId}Z`,
       method: Method.POST,
       body: JSON.stringify(comment),
       headers: new Headers({'Content-Type': 'application/json'}),

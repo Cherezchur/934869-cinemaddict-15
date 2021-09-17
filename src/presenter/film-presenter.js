@@ -72,6 +72,32 @@ export default class Film {
     return this._popupScrollLevel;
   }
 
+  setSaving() {
+    this._popupComponent.updateData({
+      isSaveComment: true,
+    });
+  }
+
+  setSaveCommentAborting() {
+    const resetFormState = () => {
+      this._popupComponent.updateData({
+        isSaveComment: false,
+      });
+    };
+
+    this._popupComponent.shake(resetFormState);
+  }
+
+  setDeleteCommentAborting() {
+    const resetFormState = () => {
+      this._popupComponent.updateData({
+        commentId: null,
+      });
+    };
+
+    this._popupComponent.shake(resetFormState);
+  }
+
   _openPopup(scrollLevel) {
 
     if(this._mode === Mode.POPUP_OPEN) {
@@ -127,7 +153,6 @@ export default class Film {
   }
 
   _addNewComment(commentData) {
-    // commentData.newComment.date = dayjs().format('YYYY/MM/DD HH:mm');
     commentData.comments.push(commentData.newComment);
 
     this._changeData(

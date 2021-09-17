@@ -4,10 +4,12 @@ import { getDuration } from '../utils/film-utils.js';
 import dayjs from 'dayjs';
 
 const createPopupTemplate = (data) => {
+  console.log(data);
+
   const {movieName, originalName, rating, duration, genres, poster,
     description, comments, watchlist, history,
     favorites, ageRating, director, writers, actors,
-    relizeDate, country, noComments} = data;
+    relizeDate, country, noComments, isSaveComment, commentId} = data;
 
   const generateGenresSection = () => {
     const genresList = new Array;
@@ -21,6 +23,17 @@ const createPopupTemplate = (data) => {
 
   const addActiveClassFilm = (booleanValue) => booleanValue ? 'film-details__control-button--active' : '';
 
+  const getCommentsCount = () => {
+    let commentsCount = 0;
+    comments.forEach((element) => {
+      if(element.id === undefined) {
+        return;
+      }
+      commentsCount++;
+    });
+    return commentsCount;
+  };
+
   const generateCommentItem = () => {
     if(noComments) {
       return `<li class="film-details__comment">
@@ -31,6 +44,9 @@ const createPopupTemplate = (data) => {
     let commentList = '';
 
     comments.forEach((element) => {
+      if(element.id === undefined) {
+        return;
+      }
       const commentItem = `<li class="film-details__comment">
                             <span class="film-details__comment-emoji">
                               <img src="./images/emoji/${element.emotion}.png" width="55" height="55" alt="emoji-${element.emotion}">
@@ -40,7 +56,7 @@ const createPopupTemplate = (data) => {
                               <p class="film-details__comment-info">
                                 <span class="film-details__comment-author">${element.author}</span>
                                 <span class="film-details__comment-day">${dayjs(element.date).format('YYYY/MM/DD HH/mm')}</span>
-                                <button class="film-details__comment-delete" data-id="${element.id}">Delete</button>
+                                <button class="film-details__comment-delete" data-id="${element.id}" ${element.id === commentId ? 'disabled' : ''}>${element.id === commentId ? 'Deleting...' : 'Delete'}</button>
                               </p>
                             </div>
                           </li>` ;
@@ -121,7 +137,7 @@ const createPopupTemplate = (data) => {
 
               <div class="film-details__bottom-container">
                 <section class="film-details__comments-wrap">
-                  <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${comments.length}</span></h3>
+                  <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">${getCommentsCount()}</span></h3>
 
                   <ul class="film-details__comments-list">
                   ${generateCommentItem()}
@@ -131,10 +147,10 @@ const createPopupTemplate = (data) => {
                     <div class="film-details__add-emoji-label"></div>
 
                     <label class="film-details__comment-label">
-                      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
+                      <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment" ${isSaveComment ? 'disabled' : ''}></textarea>
                     </label>
 
-                    <div class="film-details__emoji-list">
+                    <div class="film-details__emoji-list" ${isSaveComment ? 'style="pointer-events: none;"' : ''}>
                       <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
                       <label class="film-details__emoji-label" for="emoji-smile">
                         <img src="./images/emoji/smile.png" data-name="smile" width="30" height="30" alt="emoji">
@@ -150,7 +166,7 @@ const createPopupTemplate = (data) => {
                         <img src="./images/emoji/puke.png" data-name="puke" width="30" height="30" alt="emoji">
                       </label>
 
-                      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
+                      <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry"}>
                       <label class="film-details__emoji-label" for="emoji-angry">
                         <img src="./images/emoji/angry.png" data-name="angry" width="30" height="30" alt="emoji">
                       </label>
@@ -189,6 +205,7 @@ export default class Popup extends SmartView {
   }
 
   updateElement(newData) {
+    console.log(newData);
     this._data = Popup.parseFilmToData(newData);
     const scrollLevel = this.getScrollLevel();
     super.updateElement();
@@ -258,8 +275,13 @@ export default class Popup extends SmartView {
     if(evt.target.tagName !== 'BUTTON') {
       return;
     }
-    const commentNumber = evt.target.dataset.id;
-    this._callback.deleteCommentClick(commentNumber, this._data);
+    const commentId = evt.target.dataset.id;
+    this.updateData(
+      {
+        commentId: commentId,
+      }, false,
+    );
+    this._callback.deleteCommentClick(commentId, this._data);
   }
 
   setNewCommentKeyDownHandler(callback) {
@@ -285,7 +307,6 @@ export default class Popup extends SmartView {
   }
 
   static parseFilmToData(film) {
-
     const newComment = {
       comment: '',
       emotion: '',
@@ -303,6 +324,8 @@ export default class Popup extends SmartView {
 
   static parseDataToFilm(data) {
     delete data.newComment;
+    delete data.isDelete;
+    delete data.isSaveComment;
 
     data = Object.assign({}, data);
     return data;

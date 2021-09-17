@@ -86,6 +86,8 @@ export default class FilmsList {
 
   _handleViewAction(actionType, updateType, update) {
 
+    const updatePresenter = this._filmPresenter.get(update.id);
+
     switch (actionType) {
       case UserAction.UPDATE_LIST:
         this._api.updateFilm(update).then((response) => {
@@ -93,14 +95,23 @@ export default class FilmsList {
         });
         break;
       case UserAction.ADD_COMMENT:
-        this._api.addComment(update).then((response) => {
-          this._filmsModel.updateFilm(updateType, response);
-        });
+        updatePresenter.setSaving();
+        this._api.addComment(update)
+          .then((response) => {
+            this._filmsModel.updateFilm(updateType, response);
+          })
+          .catch(() => {
+            updatePresenter.setSaveCommentAborting();
+          });
         break;
       case UserAction.DELETE_COMMENT:
-        this._api.deleteComment(update).then(() => {
-          this._filmsModel.updateFilm(updateType, update);
-        });
+        this._api.deleteComment(update)
+          .then(() => {
+            this._filmsModel.updateFilm(updateType, update);
+          })
+          .catch(() => {
+            updatePresenter.setDeleteCommentAborting();
+          });
         break;
     }
   }
