@@ -14,7 +14,6 @@ import { filter } from '../utils/filter.js';
 import { Mode } from '../const.js';
 
 const FILM_COUNT_PER_STEP = 5;
-// const EXTRA_FILMS_COUNT = 2;
 
 export default class FilmsList {
   constructor(movieListContainer, filmsModel, filterModel, api) {
