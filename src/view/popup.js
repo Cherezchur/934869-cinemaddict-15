@@ -4,7 +4,6 @@ import { getDuration } from '../utils/film-utils.js';
 import dayjs from 'dayjs';
 
 const createPopupTemplate = (data) => {
-  console.log(data);
 
   const {movieName, originalName, rating, duration, genres, poster,
     description, comments, watchlist, history,
@@ -205,7 +204,6 @@ export default class Popup extends SmartView {
   }
 
   updateElement(newData) {
-    console.log(newData);
     this._data = Popup.parseFilmToData(newData);
     const scrollLevel = this.getScrollLevel();
     super.updateElement();
