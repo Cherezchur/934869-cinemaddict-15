@@ -56,14 +56,13 @@ export default class Api {
   }
 
   deleteComment(film) {
-    // const commentId = film.commentId;
-    // delete film.commentId;
+    const commentId = film.commentId;
     delete film.newComment;
 
     const saveCommentsArray = new Array;
 
     film.comments.forEach((comment) => {
-      if(comment.id !== film.commentId){
+      if(comment.id !== commentId){
         saveCommentsArray.push(comment);
       }
     });
@@ -71,7 +70,7 @@ export default class Api {
     film.comments = saveCommentsArray;
 
     return this._load({
-      url: `comments/${film.commentId}z`,
+      url: `comments/${commentId}z`,
       method: Method.DELETE,
     });
   }

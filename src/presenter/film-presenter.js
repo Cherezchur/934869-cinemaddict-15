@@ -82,39 +82,35 @@ export default class Film {
   }
 
   setSaveCommentAborting() {
-    const resetFormState = () => {
-      this._popupComponent.updateData({
-        isSaveComment: false,
-      });
-    };
+
+    delete this._film.comments[this._film.comments.length - 1];
+
+    this._popupComponent.updateData({
+      isSaveComment: false,
+    });
 
     const newCommentElement = this._popupComponent.getElement().querySelector('.film-details__new-comment');
 
     newCommentElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
     setTimeout(() => {
       newCommentElement.style.animation = '';
-      resetFormState();
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   setDeleteCommentAborting(update) {
-    const resetFormState = () => {
-      this._popupComponent.updateData({
-        commentId: null,
-      });
-    };
+    this._popupComponent.updateData({
+      commentId: null,
+    });
 
-    const deleteCommentElement = document.getElementById(update.commentId);
+    const deleteCommentElement = document.getElementById(update.commentId).closest('li');
 
     deleteCommentElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
     setTimeout(() => {
       deleteCommentElement.style.animation = '';
-      resetFormState();
     }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   openPopup(scrollLevel) {
-
     if(this._mode === Mode.POPUP_OPEN) {
       return;
     }
@@ -129,6 +125,7 @@ export default class Film {
         });
       })
       .then(() => {
+
         this._popupComponent = new PopupView(this._film);
         this._changeMode();
         this._mode = Mode.POPUP_OPEN;
