@@ -186,8 +186,8 @@ export default class Popup extends SmartView {
     this._listButtonClickHandler = this._listButtonClickHandler.bind(this);
     this._emojiClickHandler = this._emojiClickHandler.bind(this);
     this._textareaInputHandler = this._textareaInputHandler.bind(this);
-    this._newCommentHandler = this._newCommentHandler.bind(this);
-    this._deleteCommentHandler = this._deleteCommentHandler.bind(this);
+    this._newCommentKeyDownHandler = this._newCommentKeyDownHandler.bind(this);
+    this._deleteCommentClickHandler = this._deleteCommentClickHandler.bind(this);
     this._setInnerHandlers();
   }
 
@@ -263,12 +263,15 @@ export default class Popup extends SmartView {
     this._callback.addedListPopupClick(category);
   }
 
-  _newCommentHandler(evt) {
-    const keyCode = evt.key;
+  _newCommentKeyDownHandler(evt) {
+    let keyCode = evt.key;
+    if(evt.metaKey) {
+      keyCode = 'Control';
+    }
     this._callback.newCommentKeyDown(keyCode, this._data);
   }
 
-  _deleteCommentHandler(evt) {
+  _deleteCommentClickHandler(evt) {
     evt.preventDefault();
     if(evt.target.tagName !== 'BUTTON') {
       return;
@@ -284,13 +287,13 @@ export default class Popup extends SmartView {
 
   setNewCommentKeyDownHandler(callback) {
     this._callback.newCommentKeyDown = callback;
-    document.addEventListener('keydown', this._newCommentHandler);
+    document.addEventListener('keydown', this._newCommentKeyDownHandler);
   }
 
   setDeleteCommentKeyDownHandler(callback) {
     this._callback.deleteCommentClick = callback;
     if(this._data.comments.length > 0) {
-      this.getElement().querySelector('.film-details__comments-list').addEventListener('click', this._deleteCommentHandler);
+      this.getElement().querySelector('.film-details__comments-list').addEventListener('click', this._deleteCommentClickHandler);
     }
   }
 

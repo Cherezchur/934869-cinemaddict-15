@@ -64,7 +64,7 @@ export default class Film {
 
   closePopup() {
     document.removeEventListener('keydown', this._escKeyDownHandler);
-    document.removeEventListener('keydown', this._popupComponent._newCommentHandler);
+    document.removeEventListener('keydown', this._popupComponent._newCommentKeyDownHandler);
     remove(this._popupComponent);
     this._pageBody.classList.remove('hide-overflow');
     this._mode = Mode.DEFAULT;
@@ -208,6 +208,7 @@ export default class Film {
     if(commentData.newComment.emotion === '' || commentData.newComment.comment === '') {
       return;
     }
+
     this._addNewComment(commentData);
   }
 
