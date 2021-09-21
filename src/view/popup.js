@@ -183,9 +183,9 @@ export default class Popup extends SmartView {
     this._data = Popup.parseFilmToData(film);
 
     this._closeButtonClickHandler = this._closeButtonClickHandler.bind(this);
-    this._addedListClickHandler = this._addedListClickHandler.bind(this);
-    this._addEmojiClickHandler = this._addEmojiClickHandler.bind(this);
-    this._descriptionTextareaHandler = this._descriptionTextareaHandler.bind(this);
+    this._listButtonClickHandler = this._listButtonClickHandler.bind(this);
+    this._emojiClickHandler = this._emojiClickHandler.bind(this);
+    this._textareaInputHandler = this._textareaInputHandler.bind(this);
     this._newCommentHandler = this._newCommentHandler.bind(this);
     this._deleteCommentHandler = this._deleteCommentHandler.bind(this);
     this._setInnerHandlers();
@@ -220,13 +220,13 @@ export default class Popup extends SmartView {
   _setInnerHandlers() {
     this.getElement()
       .querySelector('.film-details__emoji-list')
-      .addEventListener('click', this._addEmojiClickHandler);
+      .addEventListener('click', this._emojiClickHandler);
     this.getElement()
       .querySelector('.film-details__comment-input')
-      .addEventListener('input', this._descriptionTextareaHandler);
+      .addEventListener('input', this._textareaInputHandler);
   }
 
-  _descriptionTextareaHandler(evt) {
+  _textareaInputHandler(evt) {
     evt.preventDefault();
     this._data.newComment.comment = evt.target.value;
 
@@ -235,7 +235,7 @@ export default class Popup extends SmartView {
     }, true);
   }
 
-  _addEmojiClickHandler(evt) {
+  _emojiClickHandler(evt) {
     evt.preventDefault();
 
     if(evt.target.tagName !== 'IMG') {
@@ -257,7 +257,7 @@ export default class Popup extends SmartView {
     this._callback.closeButtonClick();
   }
 
-  _addedListClickHandler(evt) {
+  _listButtonClickHandler(evt) {
     evt.preventDefault();
     const category = evt.target.id;
     this._callback.addedListPopupClick(category);
@@ -301,7 +301,7 @@ export default class Popup extends SmartView {
 
   setAddedListClickHandler(callback) {
     this._callback.addedListPopupClick = callback;
-    this.getElement().querySelector('.film-details__controls').addEventListener('click', this._addedListClickHandler);
+    this.getElement().querySelector('.film-details__controls').addEventListener('click', this._listButtonClickHandler);
   }
 
   static parseFilmToData(film) {

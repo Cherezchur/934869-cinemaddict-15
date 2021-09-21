@@ -3,7 +3,6 @@ import isBetween from 'dayjs/plugin/isBetween';
 
 dayjs.extend(isBetween);
 
-
 export const getFilmsOfViews = (films) => films.filter((film) => film.history);
 
 export const getDateFrom = (iterator, periodType) => {

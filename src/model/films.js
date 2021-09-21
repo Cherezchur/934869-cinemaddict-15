@@ -99,7 +99,6 @@ export default class Films extends AbstractObserver {
       },
     );
 
-    // Ненужные ключи мы удаляем
     delete adaptedFilm['film_info'];
     delete adaptedFilm['user_details'];
 
@@ -156,8 +155,6 @@ export default class Films extends AbstractObserver {
       return commentsId;
     };
 
-    const commentsIdArray = getCommentsId();
-
     const adaptedFilm = Object.assign(
       {},
       {
@@ -167,7 +164,7 @@ export default class Films extends AbstractObserver {
         'user_details': userDetails,
       },
       {
-        comments: commentsIdArray,
+        comments: getCommentsId(),
       },
       {
         'film_info': filmInfo,

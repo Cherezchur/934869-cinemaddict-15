@@ -46,7 +46,7 @@ export default class Api {
     delete comment.id;
 
     return this._load({
-      url: `comments/${filmId}Z`,
+      url: `comments/${filmId}`,
       method: Method.POST,
       body: JSON.stringify(comment),
       headers: new Headers({'Content-Type': 'application/json'}),
