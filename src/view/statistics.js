@@ -190,6 +190,9 @@ export default class Statistics extends SmartView {
   }
 
   _dateChangeHandler(evt, ...[dateFrom]) {
+    if(evt.target.tagName !== 'LABEL') {
+      return;
+    }
     const statisticPeriod = evt.target.textContent;
 
     switch (statisticPeriod) {

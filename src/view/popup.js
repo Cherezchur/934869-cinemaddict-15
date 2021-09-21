@@ -54,8 +54,8 @@ const createPopupTemplate = (data) => {
                               <p class="film-details__comment-text">${he.encode(element.comment)}</p>
                               <p class="film-details__comment-info">
                                 <span class="film-details__comment-author">${element.author}</span>
-                                <span class="film-details__comment-day">${dayjs(element.date).format('YYYY/MM/DD HH/mm')}</span>
-                                <button class="film-details__comment-delete" data-id="${element.id}" ${element.id === commentId ? 'disabled' : ''}>${element.id === commentId ? 'Deleting...' : 'Delete'}</button>
+                                <span class="film-details__comment-day">${dayjs(element.date).format('YYYY/MM/DD HH:mm')}</span>
+                                <button class="film-details__comment-delete" id="${element.id}" ${element.id === commentId ? 'disabled' : ''}>${element.id === commentId ? 'Deleting...' : 'Delete'}</button>
                               </p>
                             </div>
                           </li>` ;
@@ -273,7 +273,7 @@ export default class Popup extends SmartView {
     if(evt.target.tagName !== 'BUTTON') {
       return;
     }
-    const commentId = evt.target.dataset.id;
+    const commentId = evt.target.id;
     this.updateData(
       {
         commentId: commentId,

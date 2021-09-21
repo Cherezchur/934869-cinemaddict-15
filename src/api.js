@@ -46,7 +46,7 @@ export default class Api {
     delete comment.id;
 
     return this._load({
-      url: `comments/${filmId}`,
+      url: `comments/${filmId}z`,
       method: Method.POST,
       body: JSON.stringify(comment),
       headers: new Headers({'Content-Type': 'application/json'}),
@@ -56,14 +56,14 @@ export default class Api {
   }
 
   deleteComment(film) {
-    const commentId = film.commentId;
-    delete film.commentId;
+    // const commentId = film.commentId;
+    // delete film.commentId;
     delete film.newComment;
 
     const saveCommentsArray = new Array;
 
     film.comments.forEach((comment) => {
-      if(comment.id !== commentId){
+      if(comment.id !== film.commentId){
         saveCommentsArray.push(comment);
       }
     });
@@ -71,7 +71,7 @@ export default class Api {
     film.comments = saveCommentsArray;
 
     return this._load({
-      url: `comments/${commentId}`,
+      url: `comments/${film.commentId}z`,
       method: Method.DELETE,
     });
   }

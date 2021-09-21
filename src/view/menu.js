@@ -8,7 +8,7 @@ const createMenuTemplate = (filterLinks, activeFilter) => {
     const {name, count} = filters;
 
     return (
-      `<a href="#${name}" data-name="${name}" class="main-navigation__item ${getActiveClassFilter(name)}">${name.toUpperCase().slice(0, 1) + name.slice(1)} <span class="main-navigation__item-count">${count}</span></a>`
+      `<a href="#${name}" data-name="${name}" class="main-navigation__item ${getActiveClassFilter(name)}">${name.toUpperCase().slice(0, 1) + name.slice(1)} <span class="main-navigation__item-count" data-name="${name}">${count}</span></a>`
     );
   };
 
@@ -40,17 +40,15 @@ export default class Menu extends AbstractView {
   }
 
   _filterTypeChangeHandler(evt) {
-    if(evt.target.tagName !== 'A') {
-      return;
+    if(evt.target.tagName === 'A' || evt.target.tagName === 'SPAN') {
+      evt.preventDefault();
+      this._callback.filterTypeChange(evt.target.dataset.name);
     }
-    evt.preventDefault();
-    this._callback.filterTypeChange(evt.target.dataset.name);
   }
 
   setFilterTypeChangeHandler(callback) {
     this._callback.filterTypeChange = callback;
     this.getElement().addEventListener('click', this._filterTypeChangeHandler);
-    this.getElement().querySelector('.main-navigation__items').addEventListener('click', this._filterTypeChangeHandler);
   }
 }
 

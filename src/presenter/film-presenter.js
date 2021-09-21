@@ -6,6 +6,7 @@ import { Mode } from '../const.js';
 import { api } from '../main.js';
 
 const CLEAR_KEY_CODE_TIMEOUT = 1000;
+const SHAKE_ANIMATION_TIMEOUT = 1000;
 
 export default class Film {
   constructor(filmListContainer, changeData, changeMode) {
@@ -87,17 +88,29 @@ export default class Film {
       });
     };
 
-    this._popupComponent.shake(resetFormState);
+    const newCommentElement = this._popupComponent.getElement().querySelector('.film-details__new-comment');
+
+    newCommentElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      newCommentElement.style.animation = '';
+      resetFormState();
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
-  setDeleteCommentAborting() {
+  setDeleteCommentAborting(update) {
     const resetFormState = () => {
       this._popupComponent.updateData({
         commentId: null,
       });
     };
 
-    this._popupComponent.shake(resetFormState);
+    const deleteCommentElement = document.getElementById(update.commentId);
+
+    deleteCommentElement.style.animation = `shake ${SHAKE_ANIMATION_TIMEOUT / 1000}s`;
+    setTimeout(() => {
+      deleteCommentElement.style.animation = '';
+      resetFormState();
+    }, SHAKE_ANIMATION_TIMEOUT);
   }
 
   openPopup(scrollLevel) {
@@ -195,7 +208,7 @@ export default class Film {
 
     this._pressed.clear();
 
-    if(commentData.newComment.emotion === '' || commentData.newComment.text === '') {
+    if(commentData.newComment.emotion === '' || commentData.newComment.comment === '') {
       return;
     }
     this._addNewComment(commentData);

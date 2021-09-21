@@ -101,7 +101,7 @@ export default class FilmsList {
             this._filmsModel.updateFilm(updateType, update);
           })
           .catch(() => {
-            updatePresenter.setDeleteCommentAborting();
+            updatePresenter.setDeleteCommentAborting(update);
           });
         break;
     }
@@ -118,8 +118,9 @@ export default class FilmsList {
         this._renderFilmsSections();
         if(this._prevFilmPresenter._mode === Mode.POPUP_OPEN) {
           const popupScrollLevel = this._prevFilmPresenter.getPopupScrollLevel();
+          const isOpenPopup = true;
           this._prevFilmPresenter.closePopup();
-          this._filmPresenter.get(data.id).openPopup(popupScrollLevel);
+          this._filmPresenter.get(data.id).openPopup(popupScrollLevel, isOpenPopup);
         }
         break;
       case UpdateType.MAJOR:
