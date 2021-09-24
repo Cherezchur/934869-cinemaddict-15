@@ -243,7 +243,7 @@ export default class Popup extends SmartView {
     }
 
     const addEmojiContainer = this.getElement().querySelector('.film-details__add-emoji-label');
-    addEmojiContainer.innerHTML = `<img src="./images/emoji/${evt.target.dataset.name}.png" width="55" height="55" alt="emoji-smile">`;
+    addEmojiContainer.innerHTML = `<img src="./images/emoji/${he.encode(evt.target.dataset.name)}.png" width="55" height="55" alt="emoji-smile">`;
 
     this._data.newComment.emotion = evt.target.dataset.name;
 

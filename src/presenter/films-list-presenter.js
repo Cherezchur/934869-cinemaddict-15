@@ -1,6 +1,6 @@
 import {RenderPosition, render, remove} from '../utils/render.js';
 import filmsSectionTemplateView from '../view/films-section.js';
-import SortListTemplateView from '../view/sort.js';
+import SortListTemplateView from '../view/sort-list.js';
 import SortSectionTemplateView from '../view/films.js';
 import ShowMoreButtonTemplateView from '../view/show-more-button.js';
 import listEmptyView from '../view/list-empty.js';

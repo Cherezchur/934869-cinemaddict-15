@@ -59,15 +59,15 @@ export default class Api {
     const commentId = film.commentId;
     delete film.newComment;
 
-    const saveCommentsArray = new Array;
+    const saveComments = new Array;
 
     film.comments.forEach((comment) => {
       if(comment.id !== commentId){
-        saveCommentsArray.push(comment);
+        saveComments.push(comment);
       }
     });
 
-    film.comments = saveCommentsArray;
+    film.comments = saveComments;
 
     return this._load({
       url: `comments/${commentId}`,

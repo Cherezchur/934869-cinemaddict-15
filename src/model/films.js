@@ -171,7 +171,6 @@ export default class Films extends AbstractObserver {
       },
     );
 
-    // Ненужные ключи мы удаляем
     delete adaptedFilm.watchlist;
     delete adaptedFilm.history;
     delete adaptedFilm.favorites;

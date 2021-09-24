@@ -227,7 +227,7 @@ export default class Statistics extends SmartView {
   }
 
   _filmsViewedDuringPeriod() {
-    const filmsViewedArray = new Array;
+    const filmsViewed = new Array;
 
     const {films, dateFrom, dateTo} = this._data;
 
@@ -237,14 +237,14 @@ export default class Statistics extends SmartView {
       }
 
       if (dayjs(film.watchingDate).isBetween(dateFrom, dateTo)) {
-        filmsViewedArray.push(film);
+        filmsViewed.push(film);
       }
     });
 
-    return filmsViewedArray;
+    return filmsViewed;
   }
 
-  _getAllGenreArray() {
+  _getAllGenres() {
     let allGenres = new Array;
 
     this._filmsViewedDuringPeriod().forEach((film) => {
@@ -263,29 +263,29 @@ export default class Statistics extends SmartView {
   }
 
   _getTopGenre() {
-    const topGenreArray = new Array;
-    const allGanreArray = this._getAllGenreArray();
+    const topGenres = new Array;
+    const allGanres = this._getAllGenres();
 
-    if(this._getAllGenreArray().length === 0) {
-      topGenreArray.push('');
+    if(this._getAllGenres().length === 0) {
+      topGenres.push('');
       return;
     }
 
-    topGenreArray.push(allGanreArray[allGanreArray.length - 1][0]);
+    topGenres.push(allGanres[allGanres.length - 1][0]);
 
-    for(let count = 0; count <= allGanreArray.length - 2 ; count++) {
-      if(allGanreArray[count][1] ===  allGanreArray[allGanreArray.length - 1][1]) {
-        topGenreArray.push(allGanreArray[count][0]);
+    for(let count = 0; count <= allGanres.length - 2 ; count++) {
+      if(allGanres[count][1] ===  allGanres[allGanres.length - 1][1]) {
+        topGenres.push(allGanres[count][0]);
       }
     }
 
-    return topGenreArray;
+    return topGenres;
   }
 
   _setCharts() {
     const statisticCtx = this.getElement().querySelector('.statistic__chart');
 
-    const sortingGenres = this._getAllGenreArray();
+    const sortingGenres = this._getAllGenres();
 
     this._statisticsChart = renderStatisticsChart(statisticCtx, sortingGenres);
   }

@@ -1,4 +1,4 @@
-import FilmsListPresenter from './presenter/filmsList-presenter.js';
+import FilmsListPresenter from './presenter/films-list-presenter.js';
 import FilterPresenter from './presenter/filter-presenter.js';
 import ProfilePresenter from './presenter/profile-presenter.js';
 import FilmsModel from './model/films.js';
